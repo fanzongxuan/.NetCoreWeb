@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DotNetCore.Data;
+using Microsoft.EntityFrameworkCore;
+using DotNetCore.Core.Infrastructure;
+using DotNetCore.Core.Interface;
+using System;
 
 namespace DotNetCore.Web
 {
@@ -21,6 +22,17 @@ namespace DotNetCore.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var conn = Configuration.GetConnectionString("DotNetCoreWeb");
+            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
+
+            var typeFinder = new AppDomainTypeFinder();
+            var typesToRegister = typeFinder.FindClassesOfType(typeof(IDependency));
+            foreach (var item in typesToRegister)
+            {
+                var instance = (IDependency)Activator.CreateInstance(item);
+                instance.Register(services);
+            }
+
             services.AddMvc();
         }
 
