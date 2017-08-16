@@ -9,16 +9,20 @@ using DotNetCore.Core.Interface;
 using DotNetCore.Core.Domain.UserInfos;
 using Microsoft.EntityFrameworkCore;
 using DotNetCore.Service.Infrastructure.Services;
+using DotNetCore.Data.Interface;
 
 namespace DotNetCore.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IUserInfoService _userInfoService;
+        private readonly IDbContext _dbContext;
 
-        public HomeController(IUserInfoService userInfoService)
+        public HomeController(IUserInfoService userInfoService,
+            IDbContext dbContext)
         {
             _userInfoService = userInfoService;
+            _dbContext = dbContext;
         }
 
         public IActionResult Index()

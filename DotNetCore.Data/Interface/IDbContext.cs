@@ -38,28 +38,16 @@ namespace DotNetCore.Data.Interface
         /// <param name="sql">The SQL query string.</param>
         /// <param name="parameters">The parameters to apply to the SQL query string.</param>
         /// <returns>Result</returns>
-        IEnumerable<TElement> SqlQuery<TElement>(string sql, params object[] parameters);
+        IEnumerable<TElement> SqlQuery<TElement>(string sql, params object[] parameters) where TElement : class;
 
         /// <summary>
         /// Executes the given DDL/DML command against the database.
         /// </summary>
         /// <param name="sql">The command string</param>
-        /// <param name="doNotEnsureTransaction">false - the transaction creation is not ensured; true - the transaction creation is ensured.</param>
-        /// <param name="timeout">Timeout value, in seconds. A null value indicates that the default value of the underlying provider will be used</param>
+      /// <param name="timeout">Timeout value, in seconds. A null value indicates that the default value of the underlying provider will be used</param>
         /// <param name="parameters">The parameters to apply to the command string.</param>
         /// <returns>The result returned by the database after executing the command.</returns>
-        int ExecuteSqlCommand(string sql, bool doNotEnsureTransaction = false, int? timeout = null, params object[] parameters);
-
-        /// <summary>
-        /// Detach an entity
-        /// </summary>
-        /// <param name="entity">Entity</param>
-        void Detach(object entity);
-
-        /// <summary>
-        /// Gets or sets a value indicating whether proxy creation setting is enabled (used in EF)
-        /// </summary>
-        bool ProxyCreationEnabled { get; set; }
+        int ExecuteSqlCommand(string sql, int? timeout = null, params object[] parameters);
 
         /// <summary>
         /// Gets or sets a value indicating whether auto detect changes setting is enabled (used in EF)

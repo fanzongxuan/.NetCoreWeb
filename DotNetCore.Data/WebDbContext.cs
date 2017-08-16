@@ -6,6 +6,8 @@ using System.Linq;
 using DotNetCore.Core.Domain.UserInfos;
 using DotNetCore.Core.Infrastructure;
 using System;
+using System.Data.Common;
+using System.Data;
 
 namespace DotNetCore.Data
 {
@@ -34,43 +36,93 @@ namespace DotNetCore.Data
 
         protected virtual TEntity AttachEntityToContext<TEntity>(TEntity entity) where TEntity : BaseEntity, new()
         {
-            //little hack here until Entity Framework really supports stored procedures
-            //otherwise, navigation properties of loaded entities are not loaded until an entity is attached to the context
             var alreadyAttached = Set<TEntity>().Local.FirstOrDefault(x => x.Id == entity.Id);
             if (alreadyAttached == null)
             {
-                //attach new entity
                 Set<TEntity>().Attach(entity);
                 return entity;
             }
-
-            //entity is already loaded
+            
             return alreadyAttached;
         }
 
         #endregion
 
-        public bool ProxyCreationEnabled { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public bool AutoDetectChangesEnabled { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-
-        public void Detach(object entity)
+        public bool AutoDetectChangesEnabled
         {
-            throw new System.NotImplementedException();
+            get
+            {
+                return this.ChangeTracker.AutoDetectChangesEnabled;
+            }
+            set
+            {
+                ChangeTracker.AutoDetectChangesEnabled = value;
+            }
         }
-
-        public int ExecuteSqlCommand(string sql, bool doNotEnsureTransaction = false, int? timeout = null, params object[] parameters)
+        
+        public int ExecuteSqlCommand(string sql, int? timeout = null, params object[] parameters)
         {
-            throw new System.NotImplementedException();
+            int? previousTimeout = null;
+            if (timeout.HasValue)
+            {
+                //store previous timeout
+                previousTimeout = this.Database.GetCommandTimeout();
+                this.Database.SetCommandTimeout(timeout);
+            }
+            
+            var result = this.Database.ExecuteSqlCommand(sql, parameters);
+
+            if (previousTimeout.HasValue)
+            {
+                //set previous timeout back
+                this.Database.SetCommandTimeout(previousTimeout);
+            }
+            
+            return result;
         }
 
         public IList<TEntity> ExecuteStoredProcedureList<TEntity>(string commandText, params object[] parameters) where TEntity : BaseEntity, new()
         {
-            throw new System.NotImplementedException();
+            if (parameters != null && parameters.Length > 0)
+            {
+                for (int i = 0; i <= parameters.Length - 1; i++)
+                {
+                    var p = parameters[i] as DbParameter;
+                    if (p == null)
+                        throw new Exception("Not support parameter type");
+
+                    commandText += i == 0 ? " " : ", ";
+
+                    commandText += "@" + p.ParameterName;
+                    if (p.Direction == ParameterDirection.InputOutput || p.Direction == ParameterDirection.Output)
+                    {
+                        //output parameter
+                        commandText += " output";
+                    }
+                }
+            }
+            
+            var result = this.SqlQuery<TEntity>(commandText, parameters).ToList();
+            
+            bool acd = this.ChangeTracker.AutoDetectChangesEnabled;
+            try
+            {
+                this.ChangeTracker.AutoDetectChangesEnabled = false;
+
+                for (int i = 0; i < result.Count; i++)
+                    result[i] = AttachEntityToContext(result[i]);
+            }
+            finally
+            {
+                this.ChangeTracker.AutoDetectChangesEnabled = acd;
+            }
+
+            return result;
         }
 
-        public IEnumerable<TElement> SqlQuery<TElement>(string sql, params object[] parameters)
+        public IEnumerable<TElement> SqlQuery<TElement>(string sql, params object[] parameters) where TElement : class
         {
-            throw new System.NotImplementedException();
+           return Set<TElement>().FromSql(sql, parameters);
         }
     }
 }
