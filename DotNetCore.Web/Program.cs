@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace DotNetCore.Web
 {
@@ -20,6 +21,8 @@ namespace DotNetCore.Web
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                //you can config your log privoder and filter rules by code or appsetting.json file,visit https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/logging?tabs=aspnetcore2x;
+                .ConfigureLogging(x => x.AddConsole())
                 .Build();
     }
 }

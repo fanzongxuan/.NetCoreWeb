@@ -10,6 +10,7 @@ using DotNetCore.Core.Domain.UserInfos;
 using Microsoft.EntityFrameworkCore;
 using DotNetCore.Service.Infrastructure.Services;
 using DotNetCore.Data.Interface;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetCore.Web.Controllers
 {
@@ -17,16 +18,20 @@ namespace DotNetCore.Web.Controllers
     {
         private readonly IUserInfoService _userInfoService;
         private readonly IDbContext _dbContext;
+        private readonly ILogger _logger;
 
         public HomeController(IUserInfoService userInfoService,
-            IDbContext dbContext)
+            IDbContext dbContext,
+            ILogger<HomeController> logger)
         {
             _userInfoService = userInfoService;
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public IActionResult Index()
         {
+            throw new Exception("error!");
             return View();
         }
 

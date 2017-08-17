@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using DotNetCore.Data;
 using Microsoft.EntityFrameworkCore;
 using DotNetCore.Core.Extensions;
+using DotNetCore.Framework.Mvc.ActionFilter;
+using DotNetCore.Framework.Mvc.Config;
 
 namespace DotNetCore.Web
 {
@@ -23,7 +25,7 @@ namespace DotNetCore.Web
             var conn = Configuration.GetConnectionString("DotNetCoreWeb");
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
             services.AddAllServices();
-            services.AddMvc();
+            services.AddMvc(options => { options.Config(); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

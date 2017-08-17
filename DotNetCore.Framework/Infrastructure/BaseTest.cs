@@ -15,8 +15,6 @@ namespace DotNetCore.Framework.Infrastructure
             IServiceCollection services = new ServiceCollection();
             services.AddAllServices();
             var conn = "Data Source=.;Initial Catalog=DotNetCoreWeb;Integrated Security=True;Persist Security Info=False;MultipleActiveResultSets=True";
-            //var config = serviceProvider.GetService<IConfiguration>();
-            //var conn = config.GetConnectionString("DotNetCoreWeb");
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
             var serviceProvider = services.BuildServiceProvider();
             ServiceProvider = serviceProvider;
