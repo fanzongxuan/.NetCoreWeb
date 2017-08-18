@@ -4,9 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetCore.Data;
 using Microsoft.EntityFrameworkCore;
-using DotNetCore.Core.Extensions;
-using DotNetCore.Framework.Mvc.ActionFilter;
 using DotNetCore.Framework.Mvc.Config;
+using DotNetCore.Core.Infrastructure;
 
 namespace DotNetCore.Web
 {
@@ -22,10 +21,16 @@ namespace DotNetCore.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //default service
             var conn = Configuration.GetConnectionString("DotNetCoreWeb");
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
-            services.AddAllServices();
             services.AddMvc(options => { options.Config(); });
+            
+            //web site service and some config
+            EngineContext.Initialize(services, false);
+
+            //database Migrate
+            services.InitializeDatabase();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +54,7 @@ namespace DotNetCore.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }

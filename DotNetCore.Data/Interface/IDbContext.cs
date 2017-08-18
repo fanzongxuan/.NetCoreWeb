@@ -1,5 +1,6 @@
 ﻿using DotNetCore.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -53,5 +54,7 @@ namespace DotNetCore.Data.Interface
         /// Gets or sets a value indicating whether auto detect changes setting is enabled (used in EF)
         /// </summary>
         bool AutoDetectChangesEnabled { get; set; }
+
+        DatabaseFacade Database { get; }
     }
 }

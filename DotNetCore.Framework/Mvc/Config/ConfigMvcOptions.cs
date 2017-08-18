@@ -16,6 +16,7 @@ namespace DotNetCore.Framework.Mvc.Config
         {
             mvcOptions.Filters.Add(typeof(ExceptionFilter));
             mvcOptions.Filters.Add(typeof(RequestTrackFilter));
+            mvcOptions.MaxModelValidationErrors = 50;
         }
     }
 }

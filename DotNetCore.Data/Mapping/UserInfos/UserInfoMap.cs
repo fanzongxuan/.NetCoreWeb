@@ -12,7 +12,7 @@ namespace DotNetCore.Data.Mapping.UserInfos
         public void Configure(EntityTypeBuilder<UserInfo> builder)
         {
             builder.HasQueryFilter(x => !x.IsDeleted).
-                Property(x=>x.Name).HasMaxLength(50);
+                Property(x=>x.LoginName).HasMaxLength(50);
             builder.Property(x => x.Password).HasMaxLength(50);
         }
     }

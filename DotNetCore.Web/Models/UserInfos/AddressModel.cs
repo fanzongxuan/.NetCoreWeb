@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace DotNetCore.Core.Domain.UserInfos
+namespace DotNetCore.Web.Models.UserInfos
 {
-    public class Address : BaseEntity
+    public class AddressModel
     {
         public string PhoneNumber { get; set; }
 
@@ -16,6 +18,5 @@ namespace DotNetCore.Core.Domain.UserInfos
 
         public DateTime UpdateTime { get; set; }
 
-        public bool IsDeleted { get; set; }
     }
 }

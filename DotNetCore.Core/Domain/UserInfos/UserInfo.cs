@@ -5,16 +5,39 @@ namespace DotNetCore.Core.Domain.UserInfos
 {
     public class UserInfo: BaseEntity
     {
-        public string Name { get; set; }
+        public string LoginName { get; set; }
+
+        public string RealName { get; set; }
 
         public string Password { get; set; }
+
+        public string PhoneNumber { get; set; }
+
+        public string Email { get; set; }
+
+        public string LastLoginIpAddress { get; set; }
+
+        public int MyProperty { get; set; }
+
+        public DateTime LastLoginTime { get; set; }
 
         public DateTime CreateTime { get; set; }
 
         public DateTime UpdateTime { get; set; }
 
+        public Sex Sex { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public virtual ICollection<Address> Addresses { get; set; }
+    }
+
+    public enum Sex
+    {
+        UnDefine=0,
+
+        Man=5,
+
+        Female=10
     }
 }
