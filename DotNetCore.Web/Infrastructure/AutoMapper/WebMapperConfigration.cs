@@ -19,6 +19,8 @@ namespace DotNetCore.Web.Infrastructure.AutoMapper
             {
                 x.CreateMap<UserInfo, UserInfoModel>();
                 x.CreateMap<Address, AddressModel>();
+                x.CreateMap<UserInfoModel, UserInfo>();
+                x.CreateMap<AddressModel, Address>();
             };
 
             return action;

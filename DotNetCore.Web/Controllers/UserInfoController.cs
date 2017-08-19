@@ -1,24 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Infrastructure;
+using DotNetCore.Service.UserInfoService;
+using DotNetCore.Web.Models.UserInfos;
 using Microsoft.AspNetCore.Mvc;
-using DotNetCore.Service.Infrastructure.Services;
 
 namespace DotNetCore.Web.Controllers
 {
     public class UserInfoController : Controller
     {
-        private readonly IUserInfoService _userInfoService;
+        private readonly IUserinfoService _userInfoService;
 
-        public UserInfoController(IUserInfoService userInfoService)
+        public UserInfoController(IUserinfoService userInfoService)
         {
             _userInfoService = userInfoService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var models = _userInfoService.GetListPageable();
+            return Json(new { code = 1, mes = "Success" });
+        }
+
+        public IActionResult Insert()
+        {
+            var model = new UserInfoModel()
+            {
+                LoginName="test",
+                Password="123456",
+                RealName="我是你鸭哥",
+                PhoneNumber="13814063516",
+                Email="1027300882@qq.com",
+                LastLoginIpAddress="192.168.0.0",
+                Sex= Sex.Man,
+            };
+            var entity = AutoMapperConfiguration.Mapper.Map<UserInfoModel, UserInfo>(model);
+            _userInfoService.Insert(entity);
+            _userInfoService.Delete(entity);
+            return Json(new { code = 1, mes = "Success" });
         }
     }
 }

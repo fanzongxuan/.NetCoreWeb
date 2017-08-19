@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using DotNetCore.Web.Models;
-using DotNetCore.Core.Interface;
-using DotNetCore.Core.Domain.UserInfos;
-using Microsoft.EntityFrameworkCore;
-using DotNetCore.Service.Infrastructure.Services;
-using DotNetCore.Data.Interface;
-using Microsoft.Extensions.Logging;
-using AutoMapper;
-using DotNetCore.Core.Infrastructure;
-using DotNetCore.Web.Models.UserInfos;
 
 namespace DotNetCore.Web.Controllers
 {

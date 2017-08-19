@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetCore.Service.Infrastructure.Services
+namespace DotNetCore.Service.UserInfoService
 {
-    public interface IUserInfoService
+    public interface IUserinfoService : IBaseService<UserInfo>
     {
-        UserInfo GetById(int id);
     }
 }
