@@ -42,7 +42,7 @@ namespace DotNetCore.Service.UserInfoService
 
         public IPagedList<UserInfo> GetListPageable(int pageIndex = 0, int pageSize = int.MaxValue)
         {
-            var query = _userinfoRepository.Table.Include(x=>x.Addresses).ToList();
+            var query = _userinfoRepository.Table.Include(x => x.Addresses).OrderByDescending(x => x.CreateTime);
             //TODO 分页有问题
             return new PagedList<UserInfo>(query, pageIndex, pageSize);
         }

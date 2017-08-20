@@ -7,6 +7,7 @@ using System.Text;
 
 namespace DotNetCore.Service
 {
+    //due to ef core don't support lazy load now,so this service hava some issues
    public class BaseService<T> where T: BaseEntity
     {
         private readonly IRepository<T> _repository;

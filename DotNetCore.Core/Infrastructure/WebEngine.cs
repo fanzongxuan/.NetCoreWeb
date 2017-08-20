@@ -34,6 +34,15 @@ namespace DotNetCore.Core.Infrastructure
                 .ForEach(x => { x.Register(services); });
         }
 
+        protected virtual void RunStartupTasks()
+        {
+            var typeFinder = new AppDomainTypeFinder();
+            typeFinder.FindClassesOfType<IStartupTask>()
+                .Select(Activator.CreateInstance)
+                .Cast<IStartupTask>()
+                .OrderBy(x => x.Order).ToList()
+                .ForEach(x => x.Execute());
+        }
 
         private ServiceProvider ServiceProvider { get; set; }
 
@@ -42,6 +51,7 @@ namespace DotNetCore.Core.Infrastructure
             AddServices(serviceCollection);
             RegisterMapperConfiguration();
             ServiceProvider = serviceCollection.BuildServiceProvider();
+            RunStartupTasks();
         }
 
 

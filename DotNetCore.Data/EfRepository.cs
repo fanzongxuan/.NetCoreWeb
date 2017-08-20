@@ -10,7 +10,7 @@ using System.Text;
 namespace DotNetCore.Data
 {
     /// <summary>
-    /// ef core 的仓储
+    /// ef core Repository
     /// </summary>
     public class EfRepository<T> : IRepository<T> where T : BaseEntity
     {
