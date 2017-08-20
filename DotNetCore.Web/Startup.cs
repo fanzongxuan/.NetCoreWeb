@@ -23,7 +23,8 @@ namespace DotNetCore.Web
         {
             //default service
             var conn = Configuration.GetConnectionString("DotNetCoreWeb");
-            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
+            //sqlserver version below 2012,don't support 'Featch Next'
+            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn,t=>t.UseRowNumberForPaging()));
             services.AddMvc(options => { options.Config(); });
             
             //web site service and some config
