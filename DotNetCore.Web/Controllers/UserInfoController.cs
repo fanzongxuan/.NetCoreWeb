@@ -18,8 +18,8 @@ namespace DotNetCore.Web.Controllers
 
         public IActionResult Index()
         {
-            var models = _userInfoService.GetListPageable();
-            return Json(new { code = 1, mes = "Success" });
+            var entities = _userInfoService.GetListPageable();
+            return Json(entities);
         }
 
         public IActionResult Insert()

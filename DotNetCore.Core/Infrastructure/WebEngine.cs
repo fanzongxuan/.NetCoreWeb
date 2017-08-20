@@ -44,7 +44,7 @@ namespace DotNetCore.Core.Infrastructure
                 .ForEach(x => x.Execute());
         }
 
-        private ServiceProvider ServiceProvider { get; set; }
+        public ServiceProvider ServiceProvider { get; set; }
 
         public void Initialize(IServiceCollection serviceCollection)
         {
@@ -62,7 +62,7 @@ namespace DotNetCore.Core.Infrastructure
 
         public object GetService(Type type)
         {
-            return ServiceProvider.GetServices(type);
+            return ServiceProvider.GetService(type);
         }
 
         public IEnumerable<T> GetServices<T>()

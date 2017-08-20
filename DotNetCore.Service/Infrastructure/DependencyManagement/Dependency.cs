@@ -12,29 +12,45 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
     {
         public void Register(IServiceCollection services)
         {
-            services.AddScoped<IUserinfoService, UserinfoService>();
+            var typeFinder = new AppDomainTypeFinder();
+            var assemblies = typeFinder.GetAssemblies();
+
+            //Register myservice
+            typeFinder.FindInterfacesOfType(typeof(IBaseService<>), assemblies)
+                 .ToList()
+                 .ForEach(x =>
+                 {
+                     if (x != typeof(IBaseService<>))
+                     {
+                         typeFinder.FindClassesOfType(x)
+                          .ToList()
+                          .ForEach(t =>
+                          {
+                              services.AddScoped(x, t);
+                          });
+                     }
+                 });
+
+            //Event
             services.AddScoped<ISubscriptionService, SubscriptionService>();
             services.AddScoped<IEventPublisher, EventPublisher>();
 
-            //Register event consumers
-            var typeFinder = new AppDomainTypeFinder();
-            var consumers = typeFinder.FindClassesOfType(typeof(IConsumer<>)).ToList();
-            foreach (var consumer in consumers)
-            {
-                //find the consumer's all interfaces which is GenericType
-                var interfaces = consumer.FindInterfaces((type, criteria) =>
-                   {
-                       var isMatch = type.IsGenericType && ((Type)criteria).IsAssignableFrom(type.GetGenericTypeDefinition());
-                       return isMatch;
-                   }, typeof(IConsumer<>));
-
-                foreach (var item in interfaces)
+            //Register Consumers
+            typeFinder.FindClassesOfType(typeof(IConsumer<>), assemblies)
+                .ToList()
+                .ForEach(x =>
                 {
-                    services.AddScoped(item, consumer);
-                }
-
-
-            }
+                    x.FindInterfaces((type, criteria) =>
+                    {
+                        var isMatch = type.IsGenericType && ((Type)criteria).IsAssignableFrom(type.GetGenericTypeDefinition());
+                        return isMatch;
+                    }, typeof(IConsumer<>))
+                    .ToList()
+                    .ForEach(t =>
+                    {
+                        services.AddScoped(t,x);
+                    });
+                });
         }
     }
 }

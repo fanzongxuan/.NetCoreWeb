@@ -7,6 +7,8 @@ namespace DotNetCore.Core.Interface
 {
     public interface IEngine
     {
+        ServiceProvider ServiceProvider { get; set; }
+
         void Initialize(IServiceCollection serviceCollection);
 
         T GetService<T>() where T : class;

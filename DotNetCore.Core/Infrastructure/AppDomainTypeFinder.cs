@@ -54,6 +54,7 @@ namespace DotNetCore.Core.Infrastructure
 
         #region Methods
 
+        #region Find Classes
         public IEnumerable<Type> FindClassesOfType<T>(bool onlyConcreteClasses = true)
         {
             return FindClassesOfType(typeof(T), onlyConcreteClasses);
@@ -127,6 +128,76 @@ namespace DotNetCore.Core.Infrastructure
             }
             return result;
         }
+
+        #endregion
+
+        #region Find Interface
+
+        public IEnumerable<Type> FindInterfacesOfType<T>(bool onlyConcreteClasses = true)
+        {
+            return FindInterfacesOfType(typeof(T));
+        }
+
+        public IEnumerable<Type> FindInterfacesOfType(Type assignTypeFrom)
+        {
+            LoadMatchingAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            return FindInterfacesOfType(assignTypeFrom, GetAssemblies());
+        }
+
+        public IEnumerable<Type> FindInterfacesOfType<T>(IEnumerable<Assembly> assemblies)
+        {
+            return FindInterfacesOfType(typeof(T), assemblies);
+        }
+
+        public IEnumerable<Type> FindInterfacesOfType(Type assignTypeFrom, IEnumerable<Assembly> assemblies)
+        {
+            var result = new List<Type>();
+            try
+            {
+                foreach (var a in assemblies)
+                {
+                    Type[] types = null;
+                    try
+                    {
+                        types = a.GetTypes();
+                    }
+                    catch
+                    {
+                        if (!ignoreReflectionErrors)
+                        {
+                            throw;
+                        }
+                    }
+                    if (types != null)
+                    {
+                        foreach (var t in types)
+                        {
+                            if (assignTypeFrom.IsAssignableFrom(t) || (assignTypeFrom.IsGenericTypeDefinition && DoesTypeImplementOpenGeneric(t, assignTypeFrom)))
+                            {
+                                if (t.IsInterface)
+                                {
+                                    result.Add(t);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                var msg = string.Empty;
+                foreach (var e in ex.LoaderExceptions)
+                    msg += e.Message + Environment.NewLine;
+
+                var fail = new Exception(msg, ex);
+                Debug.WriteLine(fail.Message, fail);
+
+                throw fail;
+            }
+            return result;
+        }
+
+        #endregion
 
         public virtual IList<Assembly> GetAssemblies()
         {
