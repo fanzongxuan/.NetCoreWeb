@@ -7,7 +7,7 @@ namespace DotNetCore.Data
     public class TestStartupTask : IStartupTask
     {
 
-        public int Order => 1;
+        public int Order => 5;
 
         public void Execute()
         {

@@ -29,9 +29,6 @@ namespace DotNetCore.Web
             
             //web site service and some config
             EngineContext.Initialize(services, false);
-
-            //database Migrate
-            services.InitializeDatabase();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
