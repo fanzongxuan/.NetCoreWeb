@@ -17,7 +17,6 @@ namespace DotNetCore.Framework.Infrastructure
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
             services.AddMvc(options => { options.Config(); });
             EngineContext.Initialize(services, false);
-            services.InitializeDatabase();
         }
     }
 }
