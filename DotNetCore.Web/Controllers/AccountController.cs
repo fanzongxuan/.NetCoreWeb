@@ -52,7 +52,7 @@ namespace DotNetCore.Web.Controllers
                     ErrorNotification(string.Join("|", result.Errors.Select(x => x.Description)));
                 }
             }
-            return View();
+            return View(model);
         }
 
         [HttpGet]
