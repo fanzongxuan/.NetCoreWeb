@@ -1,0 +1,17 @@
+﻿@model DotNetCore.Web.Models.Account.RegisterModel
+@{
+    Layout = "_LayoutAuth";
+}
+<div class="signin">
+    <div asp-validation-summary="ModelOnly"></div> 
+    <div class="signin-head"><img src="~/images/page/login/test/head_120.png" alt="" class="img-circle"></div>
+    <form method="post" asp-controller="Account" asp-action="Register" class="form-signin" role="form">
+        <input type="text" asp-for="Username" class="form-control" placeholder="用户名" required autofocus />
+        <span asp-validation-for="Username"></span>
+        <input type="password" asp-for="Password" class="form-control" placeholder="密码" required />
+        <span asp-validation-for="Password"></span>
+        <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="确认密码" required />
+        <span asp-validation-for="ConfirmPassword"></span>
+        <button class="btn btn-warning btn-block" type="submit">注册</button>
+    </form>
+</div>

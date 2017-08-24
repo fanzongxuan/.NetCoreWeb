@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using DotNetCore.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DotNetCore.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
 

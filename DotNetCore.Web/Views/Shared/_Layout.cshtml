@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -33,11 +34,23 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a>@User.Identity.Name</a></li>
+                        <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                        <li><a asp-controller="Account" asp-action="Register">Register</a></li>
+                    }
                 </ul>
             </div>
         </div>
     </nav>
     <div class="container body-content">
+        @Html.Partial("Notification")
         @RenderBody()
         <hr />
         <footer>

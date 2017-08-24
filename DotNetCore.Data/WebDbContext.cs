@@ -8,10 +8,11 @@ using DotNetCore.Core.Infrastructure;
 using System;
 using System.Data.Common;
 using System.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DotNetCore.Data
 {
-    public class WebDbContext : DbContext, IDbContext
+    public class WebDbContext : IdentityDbContext<Account>, IDbContext
     {
 
         public WebDbContext(DbContextOptions<WebDbContext> options) : base(options)
@@ -42,7 +43,7 @@ namespace DotNetCore.Data
                 Set<TEntity>().Attach(entity);
                 return entity;
             }
-            
+
             return alreadyAttached;
         }
 
@@ -59,7 +60,7 @@ namespace DotNetCore.Data
                 ChangeTracker.AutoDetectChangesEnabled = value;
             }
         }
-        
+
         public int ExecuteSqlCommand(string sql, int? timeout = null, params object[] parameters)
         {
             int? previousTimeout = null;
@@ -69,7 +70,7 @@ namespace DotNetCore.Data
                 previousTimeout = this.Database.GetCommandTimeout();
                 this.Database.SetCommandTimeout(timeout);
             }
-            
+
             var result = this.Database.ExecuteSqlCommand(sql, parameters);
 
             if (previousTimeout.HasValue)
@@ -77,7 +78,7 @@ namespace DotNetCore.Data
                 //set previous timeout back
                 this.Database.SetCommandTimeout(previousTimeout);
             }
-            
+
             return result;
         }
 
@@ -101,9 +102,9 @@ namespace DotNetCore.Data
                     }
                 }
             }
-            
+
             var result = this.SqlQuery<TEntity>(commandText, parameters).ToList();
-            
+
             bool acd = this.ChangeTracker.AutoDetectChangesEnabled;
             try
             {
@@ -122,7 +123,7 @@ namespace DotNetCore.Data
 
         public IEnumerable<TElement> SqlQuery<TElement>(string sql, params object[] parameters) where TElement : class
         {
-           return Set<TElement>().FromSql(sql, parameters);
+            return Set<TElement>().FromSql(sql, parameters);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace DotNetCore.Core.Domain.UserInfos
@@ -10,11 +11,7 @@ namespace DotNetCore.Core.Domain.UserInfos
         public string RealName { get; set; }
 
         public string Password { get; set; }
-
-        public string PhoneNumber { get; set; }
-
-        public string Email { get; set; }
-
+        
         public string LastLoginIpAddress { get; set; }
 
         public int MyProperty { get; set; }

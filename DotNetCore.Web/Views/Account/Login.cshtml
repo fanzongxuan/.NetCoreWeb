@@ -1,0 +1,17 @@
+﻿@model LoginModel
+@{
+    Layout = "_LayoutAuth";
+}
+<div class="signin">
+        <div class="signin-head"><img src="~/images/page/login/test/head_120.png" alt="" class="img-circle"></div>
+        <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@Model.ReturnUrl" class="form-signin" role="form">
+            <input type="text" asp-for="Username" class="form-control" placeholder="用户名" required autofocus />
+            <span asp-validation-for="Username"></span>
+            <input type="password" asp-for="Password" class="form-control" placeholder="密码" required />
+            <span asp-validation-for="Password"></span>
+            <button class="btn btn-lg btn-warning btn-block" type="submit">登录</button>
+            <label class="checkbox">
+                <input type="checkbox" asp-for="RememberMe"> 记住我
+            </label>
+        </form>
+    </div>

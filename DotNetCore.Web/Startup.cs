@@ -6,6 +6,11 @@ using DotNetCore.Data;
 using Microsoft.EntityFrameworkCore;
 using DotNetCore.Framework.Mvc.Config;
 using DotNetCore.Core.Infrastructure;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using System;
+using DotNetCore.Core.Domain.UserInfos;
 
 namespace DotNetCore.Web
 {
@@ -24,9 +29,30 @@ namespace DotNetCore.Web
             //default service
             var conn = Configuration.GetConnectionString("DotNetCoreWeb");
             //sqlserver version below 2012,don't support 'Featch Next'
-            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn,t=>t.UseRowNumberForPaging()));
+            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
             services.AddMvc(options => { options.Config(); });
-            
+
+            services.AddIdentity<Account, IdentityRole>()
+            .AddEntityFrameworkStores<WebDbContext>()
+            .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                
+                // User settings
+                options.User.RequireUniqueEmail = false;
+            });
+
             //web site service and some config
             EngineContext.Initialize(services, false);
         }
@@ -46,11 +72,11 @@ namespace DotNetCore.Web
 
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes.Config();
             });
 
         }

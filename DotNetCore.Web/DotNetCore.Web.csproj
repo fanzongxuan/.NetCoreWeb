@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="BuildBundlerMinifier" Version="2.4.337" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
   </ItemGroup>
@@ -19,6 +20,10 @@
     <ProjectReference Include="..\DotNetCore.Data\DotNetCore.Data.csproj" />
     <ProjectReference Include="..\DotNetCore.Framework\DotNetCore.Framework.csproj" />
     <ProjectReference Include="..\DotNetCore.Service\DotNetCore.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\UserInfo\" />
   </ItemGroup>
 
 </Project>
