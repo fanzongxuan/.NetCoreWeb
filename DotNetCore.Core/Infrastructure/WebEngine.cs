@@ -46,11 +46,14 @@ namespace DotNetCore.Core.Infrastructure
 
         public ServiceProvider ServiceProvider { get; set; }
 
+        public IServiceCollection Services { get; set; }
+
         public void Initialize(IServiceCollection serviceCollection)
         {
             AddServices(serviceCollection);
             RegisterMapperConfiguration();
             ServiceProvider = serviceCollection.BuildServiceProvider();
+            Services = serviceCollection;
             RunStartupTasks();
         }
 

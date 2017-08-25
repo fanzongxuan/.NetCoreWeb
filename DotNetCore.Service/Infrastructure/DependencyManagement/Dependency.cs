@@ -5,6 +5,9 @@ using DotNetCore.Service.Events;
 using DotNetCore.Service.UserInfoService;
 using DotNetCore.Core.Infrastructure;
 using System.Linq;
+using DotNetCore.Service.Installation;
+using DotNetCore.Service.Common;
+using DotNetCore.Service.ScheduleTasks;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -15,7 +18,7 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
             var typeFinder = new AppDomainTypeFinder();
             var assemblies = typeFinder.GetAssemblies();
 
-            //Register myservice
+            //Register my services
             typeFinder.FindInterfacesOfType(typeof(IBaseService<>), assemblies)
                  .ToList()
                  .ForEach(x =>
@@ -48,8 +51,21 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                     .ToList()
                     .ForEach(t =>
                     {
-                        services.AddScoped(t,x);
+                        services.AddScoped(t, x);
                     });
+                });
+
+            //Register MachineNameProvider
+            services.AddSingleton<IMachineNameProvider, DefaultMachineNameProvider>();
+
+            //InstallationService
+            services.AddSingleton<IInstallationService, CodeFirstInstallationService>();
+
+            //Register task
+            typeFinder.FindClassesOfType(typeof(ITask), assemblies)
+                .ToList()
+                .ForEach(x => {
+                    services.AddSingleton(x);
                 });
         }
     }

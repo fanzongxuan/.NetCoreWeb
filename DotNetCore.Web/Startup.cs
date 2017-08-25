@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Service.ScheduleTasks;
 
 namespace DotNetCore.Web
 {
@@ -48,13 +49,20 @@ namespace DotNetCore.Web
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
-                
+
                 // User settings
                 options.User.RequireUniqueEmail = false;
             });
 
-            //web site service and some config
+            //web site services and some configs
             EngineContext.Initialize(services, false);
+
+            //start schedule task
+            if (!string.IsNullOrWhiteSpace(conn))
+            {
+                TaskManager.Instance.Initialize();
+                TaskManager.Instance.Start();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

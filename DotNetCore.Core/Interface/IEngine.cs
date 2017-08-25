@@ -16,5 +16,7 @@ namespace DotNetCore.Core.Interface
         object GetService(Type type);
 
         IEnumerable<T> GetServices<T>();
+
+        IServiceCollection Services { get; set; }
     }
 }

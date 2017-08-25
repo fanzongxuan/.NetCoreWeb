@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetCore.Service.ScheduleTaskeService
+namespace DotNetCore.Service.ScheduleTasks
 {
     public interface ITask
     {
