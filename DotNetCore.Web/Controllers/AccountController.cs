@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using DotNetCore.Core.Extensions;
+using DotNetCore.Service.Accounts;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,13 +14,10 @@ namespace DotNetCore.Web.Controllers
 {
     public class AccountController : BaseController
     {
-        private SignInManager<Account> _signManager;
-        private UserManager<Account> _userManager;
-        public AccountController(UserManager<Account> userManager,
-            SignInManager<Account> signManager)
+        private readonly IAccountService _accountService;
+        public AccountController(IAccountService accountService)
         {
-            _userManager = userManager;
-            _signManager = signManager;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -31,7 +29,7 @@ namespace DotNetCore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public IActionResult Register(RegisterModel model)
         {
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "home");
@@ -39,11 +37,11 @@ namespace DotNetCore.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = new Account { UserName = model.Username };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = _accountService.Register(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    await _signManager.SignInAsync(user, false);
+                    _accountService.LoginWithUserNameAndPwd(model.Username, model.Password, false, false);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -51,6 +49,10 @@ namespace DotNetCore.Web.Controllers
 
                     ErrorNotification(string.Join("|", result.Errors.Select(x => x.Description)));
                 }
+            }
+            else
+            {
+                ErrorNotification(string.Join("|", ModelState.Errors()));
             }
             return View(model);
         }
@@ -66,14 +68,14 @@ namespace DotNetCore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel model)
+        public IActionResult Login(LoginModel model)
         {
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "home");
 
             if (ModelState.IsValid)
             {
-                var result = await _signManager.PasswordSignInAsync(model.Username,
+                var result = _accountService.LoginWithUserNameAndPwd(model.Username,
                    model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
@@ -97,9 +99,9 @@ namespace DotNetCore.Web.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await _signManager.SignOutAsync();
+            _accountService.LoginOut();
             return RedirectToAction("Index", "Home");
         }
     }

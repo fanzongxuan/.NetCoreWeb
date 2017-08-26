@@ -8,6 +8,7 @@ using System.Linq;
 using DotNetCore.Service.Installation;
 using DotNetCore.Service.Common;
 using DotNetCore.Service.ScheduleTasks;
+using DotNetCore.Service.Accounts;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -55,6 +56,7 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                     });
                 });
 
+            services.AddTransient<IAccountService, AccountService>();
             //Register MachineNameProvider
             services.AddSingleton<IMachineNameProvider, DefaultMachineNameProvider>();
 

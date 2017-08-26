@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DotNetCore.Core.Domain.UserInfos
 {
-   public class Account: IdentityUser
+    public class Account : IdentityUser
     {
     }
 }
