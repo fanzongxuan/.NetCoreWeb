@@ -32,7 +32,7 @@ namespace DotNetCore.Web
             //sqlserver version below 2012,don't support 'Featch Next'
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
             services.AddMvc(options => { options.Config(); });
-
+            services.AddMemoryCache();
             services.AddIdentity<Account, IdentityRole>()
             .AddEntityFrameworkStores<WebDbContext>()
             .AddDefaultTokenProviders();

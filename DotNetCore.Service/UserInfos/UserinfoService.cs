@@ -8,20 +8,26 @@ using DotNetCore.Core;
 using DotNetCore.Service.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using DotNetCore.Core.Cache;
 
 namespace DotNetCore.Service.UserInfoService
 {
     public class UserinfoService : IUserinfoService
     {
+        private const string USERINFO_BY_ID_KEY = "DotNetWeb.userinfo.id-{0}";
+
+        private readonly ICacheManager _cacheManager;
         protected readonly IRepository<UserInfo> _userinfoRepository;
         private readonly IEventPublisher _eventPublisher;
 
         public UserinfoService(IRepository<UserInfo> userinfoRepository,
-            IEventPublisher eventPublisher
+            IEventPublisher eventPublisher,
+            ICacheManager cacheManager
             )
         {
             _userinfoRepository = userinfoRepository;
             _eventPublisher = eventPublisher;
+            _cacheManager = cacheManager;
         }
 
         public void Delete(UserInfo entitiy)
@@ -37,13 +43,15 @@ namespace DotNetCore.Service.UserInfoService
         {
             if (id == 0)
                 return null;
-            return _userinfoRepository.GetById(id);
+
+            string key = string.Format(USERINFO_BY_ID_KEY, id);
+            return _cacheManager.Get(key, () => _userinfoRepository.GetById(id));
         }
 
         public IPagedList<UserInfo> GetListPageable(int pageIndex = 0, int pageSize = int.MaxValue)
         {
             var query = _userinfoRepository.Table.Include(x => x.Addresses).OrderByDescending(x => x.CreateTime);
-            //TODO 分页有问题
+
             return new PagedList<UserInfo>(query, pageIndex, pageSize);
         }
 
@@ -52,6 +60,12 @@ namespace DotNetCore.Service.UserInfoService
             if (entitiy == null)
                 throw new ArgumentNullException("UserInfo");
             _userinfoRepository.Insert(entitiy);
+
+            //remove cache
+            string key = string.Format(USERINFO_BY_ID_KEY, entitiy.Id);
+            _cacheManager.Remove(key);
+
+            //event publish
             _eventPublisher.EntityInserted(entitiy);
         }
 
@@ -60,6 +74,12 @@ namespace DotNetCore.Service.UserInfoService
             if (entitiy == null)
                 throw new ArgumentNullException("entitiy");
             _userinfoRepository.Update(entitiy);
+
+            //remove cache
+            string key = string.Format(USERINFO_BY_ID_KEY, entitiy.Id);
+            _cacheManager.Remove(key);
+
+            //event publish
             _eventPublisher.EntityUpdated(entitiy);
         }
     }

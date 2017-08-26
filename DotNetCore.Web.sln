@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Web", "DotNetCore.Web\DotNetCore.Web.csproj", "{18ECF368-FE86-4139-BBD1-AB49A359B910}"
 EndProject
@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Service", "DotNe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Framework", "DotNetCore.Framework\DotNetCore.Framework.csproj", "{E4F2FDC8-C118-40AA-AE59-AF0D5CF83D21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCore.Data.Tests", "DotNetCore.Data.Tests\DotNetCore.Data.Tests.csproj", "{D7F508DB-EE78-4572-98C1-D4DD0C2350D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Data.Tests", "DotNetCore.Data.Tests\DotNetCore.Data.Tests.csproj", "{D7F508DB-EE78-4572-98C1-D4DD0C2350D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCore.Service.Tests", "DotNetCore.Service.Tests\DotNetCore.Service.Tests.csproj", "{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{D7F508DB-EE78-4572-98C1-D4DD0C2350D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7F508DB-EE78-4572-98C1-D4DD0C2350D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7F508DB-EE78-4572-98C1-D4DD0C2350D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{35B4EFFC-5029-40C2-BA8E-91D17B1CAC84} = {567658ED-FCC3-4DFC-8ED2-FDB88D662687}
 		{E4F2FDC8-C118-40AA-AE59-AF0D5CF83D21} = {8AF6A76D-D205-4F5C-9DB9-A4C5FD8CA136}
 		{D7F508DB-EE78-4572-98C1-D4DD0C2350D8} = {48AA525E-A8CE-43B0-836F-E2FE95F0D98A}
+		{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C} = {48AA525E-A8CE-43B0-836F-E2FE95F0D98A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D404D86B-FD57-48ED-ABA0-A1E8A16AC79F}
