@@ -32,10 +32,9 @@ namespace DotNetCore.Core.Cache
         /// <returns>Cached item</returns>
         public static T Get<T>(this ICacheManager cacheManager, string key, int cacheTime, Func<T> acquire)
         {
-            if (cacheManager.IsSet(key))
-            {
-                return cacheManager.Get<T>(key);
-            }
+            var cacheObj = cacheManager.Get<T>(key);
+            if (cacheObj != null)
+                return cacheObj;
 
             var result = acquire();
             if (cacheTime > 0)
