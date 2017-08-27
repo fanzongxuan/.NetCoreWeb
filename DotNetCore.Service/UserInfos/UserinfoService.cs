@@ -36,6 +36,9 @@ namespace DotNetCore.Service.UserInfoService
                 throw new ArgumentNullException("UserInfo");
             entitiy.IsDeleted = true;
             _userinfoRepository.Update(entitiy);
+
+            string key = string.Format(USERINFO_BY_ID_KEY, entitiy.Id);
+            _cacheManager.Remove(key);
             _eventPublisher.EntityDeleted(entitiy);
         }
 

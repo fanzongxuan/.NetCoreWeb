@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace DotNetCore.Core.Cache
@@ -32,8 +34,7 @@ namespace DotNetCore.Core.Cache
         public bool IsSet(string key)
         {
             object value;
-            _memoryCache.TryGetValue(key, out value);
-            return value != null;
+            return _memoryCache.TryGetValue(key, out value);
         }
 
         public void Remove(string key)
@@ -43,7 +44,15 @@ namespace DotNetCore.Core.Cache
 
         public void RemoveByPattern(string pattern)
         {
-            throw new NotImplementedException();
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            object entries = this._memoryCache.GetType().GetField("_entries", flags).GetValue(this._memoryCache);
+            IDictionary cacheItems = entries as IDictionary;
+            List<string> keys = new List<string>();
+            foreach (var cacheItem in cacheItems.Keys)
+            {
+                keys.Add(cacheItem.ToString());
+            }
+            this.RemoveByPattern(pattern, keys);
         }
 
         public virtual void Set(string key, object data, int cacheTime)

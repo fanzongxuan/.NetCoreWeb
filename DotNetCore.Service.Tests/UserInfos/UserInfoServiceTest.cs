@@ -1,4 +1,5 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
+﻿using DotNetCore.Core.Cache;
+using DotNetCore.Core.Domain.UserInfos;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Framework.Infrastructure;
 using DotNetCore.Service.UserInfoService;
@@ -27,6 +28,8 @@ namespace DotNetCore.Service.Tests.UserInfos
             userinfoService.Insert(entity);
             var userinfo= userinfoService.GetById(entity.Id);
             var userinfoFromCach = userinfoService.GetById(entity.Id);
+
+            var _cacheManager = EngineContext.Current.GetService<ICacheManager>();
             userinfo.RealName = "6666";
             userinfoService.Update(userinfo);
             userinfoService.Delete(userinfo);
