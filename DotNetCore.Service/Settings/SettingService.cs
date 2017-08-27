@@ -15,7 +15,8 @@ namespace DotNetCore.Service.Settings
     public class SettingService : ISettingService
     {
 
-        private const string SETTINGS_ALL_KEY = "DotNetCore.setting.all";
+        private const string SETTINGS_ALL_KEY = "DotNetWeb.setting.all";
+        private const string SETTINGS_PATTERN_KEY = "DotNetWeb.setting.";
 
         private readonly IRepository<Setting> _settingRepository;
         private readonly IEventPublisher _eventPublisher;
@@ -30,7 +31,7 @@ namespace DotNetCore.Service.Settings
             _eventPublisher = eventPublisher;
             _cacheManager = cacheManager;
         }
-        
+
         protected virtual IDictionary<string, IList<SettingForCaching>> GetAllSettingsCached()
         {
             //cache
@@ -40,7 +41,8 @@ namespace DotNetCore.Service.Settings
                 //we use no tracking here for performance optimization
                 //anyway records are loaded only for read-only operations
                 var query = from s in _settingRepository.TableNoTracking
-                            orderby s.Name                            select s;
+                            orderby s.Name
+                            select s;
                 var settings = query.ToList();
                 var dictionary = new Dictionary<string, IList<SettingForCaching>>();
                 foreach (var s in settings)
@@ -50,7 +52,7 @@ namespace DotNetCore.Service.Settings
                     {
                         Id = s.Id,
                         Name = s.Name,
-                        Value = s.Value,
+                        Value = s.Value
                     };
                     if (!dictionary.ContainsKey(resourceName))
                     {
@@ -81,9 +83,8 @@ namespace DotNetCore.Service.Settings
                 var settingsByKey = settings[key];
                 var setting = settingsByKey.FirstOrDefault();
 
-                //load shared value?
                 if (setting == null && loadSharedValueIfNotFound)
-                    setting = settingsByKey.FirstOrDefault(x => x.StoreId == 0);
+                    setting = settingsByKey.FirstOrDefault();
 
                 if (setting != null)
                     return CommonHelper.To<T>(setting.Value);
@@ -97,6 +98,9 @@ namespace DotNetCore.Service.Settings
             if (entitiy == null)
                 throw new ArgumentNullException("setting");
             _settingRepository.Delete(entitiy);
+
+            _cacheManager.RemoveByPattern(SETTINGS_PATTERN_KEY);
+            _eventPublisher.EntityDeleted(entitiy);
         }
 
         public Setting GetById(int id)
@@ -116,7 +120,10 @@ namespace DotNetCore.Service.Settings
         {
             if (entitiy == null)
                 throw new ArgumentNullException("Setting");
+
             _settingRepository.Insert(entitiy);
+            _cacheManager.RemoveByPattern(SETTINGS_PATTERN_KEY);
+            _eventPublisher.EntityInserted(entitiy);
         }
 
         public void Update(Setting entitiy)
@@ -124,8 +131,11 @@ namespace DotNetCore.Service.Settings
             if (entitiy == null)
                 throw new ArgumentNullException("Setting");
             _settingRepository.Update(entitiy);
+
+            _cacheManager.RemoveByPattern(SETTINGS_PATTERN_KEY);
+            _eventPublisher.EntityUpdated(entitiy);
         }
-        
+
         public virtual IList<Setting> GetAllSettings()
         {
             var query = from s in _settingRepository.Table
@@ -133,6 +143,23 @@ namespace DotNetCore.Service.Settings
                         select s;
             var settings = query.ToList();
             return settings;
+        }
+
+        public virtual void DeleteSettings(IList<Setting> settings)
+        {
+            if (settings == null)
+                throw new ArgumentNullException("settings");
+
+            _settingRepository.Delete(settings);
+
+            //cache
+            _cacheManager.RemoveByPattern(SETTINGS_PATTERN_KEY);
+
+            //event notification
+            foreach (var setting in settings)
+            {
+                _eventPublisher.EntityDeleted(setting);
+            }
         }
 
         public virtual bool SettingExists<T, TPropType>(T settings,
@@ -176,7 +203,7 @@ namespace DotNetCore.Service.Settings
             return settings;
         }
 
-        public virtual void SetSetting<T>(string key, T value, bool clearCache = true)
+        public virtual void SetSetting<T>(string key, T value)
         {
             if (key == null)
                 throw new ArgumentNullException("key");
@@ -223,12 +250,48 @@ namespace DotNetCore.Service.Settings
                 //Duck typing is not supported in C#. That's why we're using dynamic type
                 dynamic value = prop.GetValue(settings, null);
                 if (value != null)
-                    SetSetting(key, value, false);
+                    SetSetting(key, value);
                 else
-                    SetSetting(key, "", false);
+                    SetSetting(key, "");
             }
-            
+
         }
+        
+        public virtual void DeleteSetting<T>() where T : ISetting, new()
+        {
+            var settingsToDelete = new List<Setting>();
+            var allSettings = GetAllSettings();
+            foreach (var prop in typeof(T).GetProperties())
+            {
+                string key = typeof(T).Name + "." + prop.Name;
+                settingsToDelete.AddRange(allSettings.Where(x => x.Name.Equals(key, StringComparison.InvariantCultureIgnoreCase)));
+            }
+
+            DeleteSettings(settingsToDelete);
+        }
+
+        public virtual void DeleteSetting<T, TPropType>(T settings,
+          Expression<Func<T, TPropType>> keySelector) where T : ISetting, new()
+        {
+            string key = settings.GetSettingKey(keySelector);
+            key = key.Trim().ToLowerInvariant();
+
+            var allSettings = GetAllSettingsCached();
+            var settingForCaching = allSettings.ContainsKey(key) ?
+                allSettings[key].FirstOrDefault() : null;
+            if (settingForCaching != null)
+            {
+                //update
+                var setting = GetById(settingForCaching.Id);
+                Delete(setting);
+            }
+        }
+
+        public virtual void ClearCache()
+        {
+            _cacheManager.RemoveByPattern(SETTINGS_PATTERN_KEY);
+        }
+
 
         [Serializable]
         public class SettingForCaching
@@ -236,7 +299,6 @@ namespace DotNetCore.Service.Settings
             public int Id { get; set; }
             public string Name { get; set; }
             public string Value { get; set; }
-            public int StoreId { get; set; }
         }
     }
 }

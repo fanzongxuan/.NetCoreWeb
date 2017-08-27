@@ -11,7 +11,7 @@ namespace DotNetCore.Service.Settings
     {
         void SaveSetting<T>(T settings) where T : ISetting, new();
 
-        void SetSetting<T>(string key, T value, bool clearCache = true);
+        void SetSetting<T>(string key, T value);
 
         T LoadSetting<T>() where T : ISetting, new();
 
@@ -21,6 +21,14 @@ namespace DotNetCore.Service.Settings
         IList<Setting> GetAllSettings();
 
         T GetSettingByKey<T>(string key, T defaultValue = default(T), bool loadSharedValueIfNotFound = false);
-        
+
+        void ClearCache();
+
+        void DeleteSetting<T, TPropType>(T settings,
+         Expression<Func<T, TPropType>> keySelector) where T : ISetting, new();
+
+        void DeleteSetting<T>() where T : ISetting, new();
+
+        void DeleteSettings(IList<Setting> settings);
     }
 }
