@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.8
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Web", "DotNetCore.Web\DotNetCore.Web.csproj", "{18ECF368-FE86-4139-BBD1-AB49A359B910}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Framework", "Dot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Data.Tests", "DotNetCore.Data.Tests\DotNetCore.Data.Tests.csproj", "{D7F508DB-EE78-4572-98C1-D4DD0C2350D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCore.Service.Tests", "DotNetCore.Service.Tests\DotNetCore.Service.Tests.csproj", "{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetCore.Service.Tests", "DotNetCore.Service.Tests\DotNetCore.Service.Tests.csproj", "{00C12D6C-F565-4C8B-AD55-7FC8465E0F6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using DotNetCore.Core.Domain.UserInfos;
 using DotNetCore.Service.ScheduleTasks;
+using DotNetCore.Framework.WebSiteConfig;
 
 namespace DotNetCore.Web
 {
@@ -36,26 +37,11 @@ namespace DotNetCore.Web
             services.AddIdentity<Account, IdentityRole>()
             .AddEntityFrameworkStores<WebDbContext>()
             .AddDefaultTokenProviders();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
-
-                // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 10;
-
-                // User settings
-                options.User.RequireUniqueEmail = false;
-            });
-
+            
             //web site services and some configs
             EngineContext.Initialize(services, false);
+
+            services.ConfigServices();
 
             //start schedule task
             if (!string.IsNullOrWhiteSpace(conn))

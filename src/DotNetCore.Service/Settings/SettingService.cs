@@ -38,8 +38,6 @@ namespace DotNetCore.Service.Settings
             string key = string.Format(SETTINGS_ALL_KEY);
             return _cacheManager.Get(key, () =>
             {
-                //we use no tracking here for performance optimization
-                //anyway records are loaded only for read-only operations
                 var query = from s in _settingRepository.TableNoTracking
                             orderby s.Name
                             select s;
@@ -234,9 +232,6 @@ namespace DotNetCore.Service.Settings
 
         public virtual void SaveSetting<T>(T settings) where T : ISetting, new()
         {
-            /* We do not clear cache after each setting update.
-             * This behavior can increase performance because cached settings will not be cleared 
-             * and loaded from database after each update */
             foreach (var prop in typeof(T).GetProperties())
             {
                 // get properties we can read and write to
@@ -247,7 +242,6 @@ namespace DotNetCore.Service.Settings
                     continue;
 
                 string key = typeof(T).Name + "." + prop.Name;
-                //Duck typing is not supported in C#. That's why we're using dynamic type
                 dynamic value = prop.GetValue(settings, null);
                 if (value != null)
                     SetSetting(key, value);

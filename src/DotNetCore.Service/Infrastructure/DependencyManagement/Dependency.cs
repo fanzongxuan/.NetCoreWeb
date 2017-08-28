@@ -9,6 +9,7 @@ using DotNetCore.Service.Installation;
 using DotNetCore.Service.Common;
 using DotNetCore.Service.ScheduleTasks;
 using DotNetCore.Service.Accounts;
+using DotNetCore.Service.Settings;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -69,6 +70,9 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                 .ForEach(x => {
                     services.AddSingleton(x);
                 });
+
+            services.AddScoped<ISettingService, SettingService>();
+            
         }
     }
 }

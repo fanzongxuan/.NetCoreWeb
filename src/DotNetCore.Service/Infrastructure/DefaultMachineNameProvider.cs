@@ -8,7 +8,7 @@ namespace DotNetCore.Service.Infrastructure
     {
         public string GetMachineName()
         {
-            return System.Environment.MachineName;
+            return Environment.MachineName;
         }
     }
 }

@@ -17,6 +17,10 @@ namespace DotNetCore.Framework.Mvc.Config
             routes.MapRoute(
                    name: "login",
                    template: "{controller=UserInfo}/{action=Login}");
+            routes.MapRoute(
+                   name: "areas",
+                   template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+         );
         }
     }
 }
