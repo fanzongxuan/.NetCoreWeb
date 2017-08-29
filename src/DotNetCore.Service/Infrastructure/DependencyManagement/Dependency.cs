@@ -10,16 +10,19 @@ using DotNetCore.Service.Common;
 using DotNetCore.Service.ScheduleTasks;
 using DotNetCore.Service.Accounts;
 using DotNetCore.Service.Settings;
+using Microsoft.Extensions.Configuration;
+using Autofac;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
     public class Dependency : IDependency
     {
-        public void Register(IServiceCollection services)
-        {
-            var typeFinder = new AppDomainTypeFinder();
-            var assemblies = typeFinder.GetAssemblies();
+        public int Order => 0;
 
+        public void Register(ContainerBuilder builder, AppDomainTypeFinder typeFinder, IConfiguration configuration)
+        {
+            var assemblies = typeFinder.GetAssemblies();
+            
             //Register my services
             typeFinder.FindInterfacesOfType(typeof(IBaseService<>), assemblies)
                  .ToList()
@@ -31,14 +34,14 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                           .ToList()
                           .ForEach(t =>
                           {
-                              services.AddScoped(x, t);
+                              builder.RegisterType(t).As(x).InstancePerLifetimeScope();
                           });
                      }
                  });
 
             //Event
-            services.AddScoped<ISubscriptionService, SubscriptionService>();
-            services.AddScoped<IEventPublisher, EventPublisher>();
+            builder.RegisterType<SubscriptionService>().As<ISubscriptionService>().InstancePerLifetimeScope();
+            builder.RegisterType<EventPublisher>().As<IEventPublisher>().InstancePerLifetimeScope();
 
             //Register Consumers
             typeFinder.FindClassesOfType(typeof(IConsumer<>), assemblies)
@@ -53,26 +56,30 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                     .ToList()
                     .ForEach(t =>
                     {
-                        services.AddScoped(t, x);
+                        builder.RegisterType(x).As(t).InstancePerLifetimeScope();
                     });
                 });
 
-            services.AddTransient<IAccountService, AccountService>();
+
+            builder.RegisterType<AccountService>().As<IAccountService>().InstancePerLifetimeScope();
+
             //Register MachineNameProvider
-            services.AddSingleton<IMachineNameProvider, DefaultMachineNameProvider>();
+            builder.RegisterType<DefaultMachineNameProvider>().As<IMachineNameProvider>().InstancePerLifetimeScope();
 
             //InstallationService
-            services.AddSingleton<IInstallationService, CodeFirstInstallationService>();
+            builder.RegisterType<CodeFirstInstallationService>().As<IInstallationService>().InstancePerLifetimeScope();
 
             //Register task
             typeFinder.FindClassesOfType(typeof(ITask), assemblies)
                 .ToList()
-                .ForEach(x => {
-                    services.AddSingleton(x);
-                });
+                .ForEach(x =>
+                {
 
-            services.AddScoped<ISettingService, SettingService>();
+                    builder.RegisterType(x).SingleInstance();
+                });
             
+            builder.RegisterType<SettingService>().As<ISettingService>().InstancePerLifetimeScope();
+
         }
     }
 }

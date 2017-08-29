@@ -2,17 +2,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using DotNetCore.Data;
-using Microsoft.EntityFrameworkCore;
+using Autofac;
+using DotNetCore.Framework.WebSiteConfig;
+using Autofac.Extensions.DependencyInjection;
+using System;
 using DotNetCore.Framework.Mvc.Config;
 using DotNetCore.Core.Infrastructure;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using System;
-using DotNetCore.Core.Domain.UserInfos;
-using DotNetCore.Service.ScheduleTasks;
-using DotNetCore.Framework.WebSiteConfig;
 
 namespace DotNetCore.Web
 {
@@ -23,32 +18,19 @@ namespace DotNetCore.Web
             Configuration = configuration;
         }
 
+        public IContainer ApplicationContainer { get; private set; }
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            //default service
-            var conn = Configuration.GetConnectionString("DotNetCoreWeb");
-            //sqlserver version below 2012,don't support 'Featch Next'
-            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
-            services.AddMvc(options => { options.Config(); });
-            services.AddMemoryCache();
-            services.AddIdentity<Account, IdentityRole>()
-            .AddEntityFrameworkStores<WebDbContext>()
-            .AddDefaultTokenProviders();
-            
-            //web site services and some configs
-            EngineContext.Initialize(services, false);
+            // config services
+            services.ConfigServices(Configuration); // Create the container builder.
 
-            services.ConfigServices();
+            // Create the IServiceProvider based on the container.
+            return EngineContext.Current.ServiceProvider;
 
-            //start schedule task
-            if (!string.IsNullOrWhiteSpace(conn))
-            {
-                TaskManager.Instance.Initialize();
-                TaskManager.Instance.Start();
-            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

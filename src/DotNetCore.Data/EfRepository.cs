@@ -34,7 +34,6 @@ namespace DotNetCore.Data
 
         #endregion
         
-
         #region Methods
 
         /// <summary>

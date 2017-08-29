@@ -250,7 +250,7 @@ namespace DotNetCore.Service.Settings
             }
 
         }
-        
+
         public virtual void DeleteSetting<T>() where T : ISetting, new()
         {
             var settingsToDelete = new List<Setting>();
@@ -287,7 +287,6 @@ namespace DotNetCore.Service.Settings
         }
 
 
-        [Serializable]
         public class SettingForCaching
         {
             public int Id { get; set; }

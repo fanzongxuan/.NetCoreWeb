@@ -1,4 +1,6 @@
-﻿using DotNetCore.Service.ScheduleTasks;
+﻿using DotNetCore.Core.Infrastructure;
+using DotNetCore.Service.ScheduleTasks;
+using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Net;
 

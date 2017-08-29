@@ -5,9 +5,11 @@ using DotNetCore.Framework.Mvc.Config;
 using DotNetCore.Service.ScheduleTasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 
 namespace DotNetCore.Framework.Infrastructure
 {
@@ -15,6 +17,12 @@ namespace DotNetCore.Framework.Infrastructure
     {
         public BaseTest()
         {
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+
+            var config = builder.Build();
+
             IServiceCollection services = new ServiceCollection();
             var conn = "Data Source=.;Initial Catalog=DotNetCoreWeb;Integrated Security=True;Persist Security Info=False;MultipleActiveResultSets=True";
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn));
@@ -39,7 +47,7 @@ namespace DotNetCore.Framework.Infrastructure
                 options.User.RequireUniqueEmail = false;
             });
             services.AddMvc(options => { options.Config(); });
-            EngineContext.Initialize(services, false);
+            EngineContext.Initialize(services,config, false);
             //start schedule task
             if (!string.IsNullOrWhiteSpace(conn))
             {

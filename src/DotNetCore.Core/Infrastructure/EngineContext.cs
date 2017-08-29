@@ -1,4 +1,5 @@
 ﻿using DotNetCore.Core.Interface;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
@@ -22,12 +23,12 @@ namespace DotNetCore.Core.Infrastructure
         #region Methods
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static IEngine Initialize(IServiceCollection serviceCollection,bool forceRecreate)
+        public static IEngine Initialize(IServiceCollection serviceCollection, IConfiguration configuration, bool forceRecreate)
         {
             if (Singleton<IEngine>.Instance == null || forceRecreate)
             {
                 Singleton<IEngine>.Instance = new WebEngine();
-                Singleton<IEngine>.Instance.Initialize(serviceCollection);
+                Singleton<IEngine>.Instance.Initialize(serviceCollection, configuration);
             }
             return Singleton<IEngine>.Instance;
         }

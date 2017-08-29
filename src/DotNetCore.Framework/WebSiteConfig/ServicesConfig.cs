@@ -1,17 +1,19 @@
 ﻿using DotNetCore.Core.Domain.UserInfos;
 using DotNetCore.Core.Infrastructure;
+using DotNetCore.Data;
+using DotNetCore.Framework.Mvc.Config;
 using DotNetCore.Service.Settings;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Extensions.Configuration;
+using DotNetCore.Service.ScheduleTasks;
 
 namespace DotNetCore.Framework.WebSiteConfig
 {
     public static class ServicesConfig
     {
-        public static void ConfigServices(this IServiceCollection services)
+        private static void ConfigAuthorize(IServiceCollection services)
         {
             var _settingService = EngineContext.Current.GetService<ISettingService>();
             var authorizeSettings = _settingService.LoadSetting<AuthorizeSettings>();
@@ -19,18 +21,64 @@ namespace DotNetCore.Framework.WebSiteConfig
             {
                 // Password settings
                 options.Password.RequireDigit = authorizeSettings.RequirePasswordDigit;
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = authorizeSettings.RequirePasswordLength;
+                options.Password.RequireNonAlphanumeric = authorizeSettings.RequirePasswordNonAlphanumeric;
+                options.Password.RequireUppercase = authorizeSettings.RequirePasswordUppercase;
+                options.Password.RequireLowercase = authorizeSettings.RequirePasswordLowercase;
+                options.Password.RequiredUniqueChars = authorizeSettings.RequiredPasswordUniqueChars;
 
                 // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.DefaultLockoutTimeSpan = authorizeSettings.DefaultLockoutTimeSpan;
+                options.Lockout.MaxFailedAccessAttempts = authorizeSettings.MaxFailedAccessAttempts;
 
                 // User settings
-                options.User.RequireUniqueEmail = false;
+                options.User.RequireUniqueEmail = authorizeSettings.RequireUniqueEmail;
+
+                //sign in
+                options.SignIn.RequireConfirmedEmail = authorizeSettings.RequireConfirmedEmail;
+                options.SignIn.RequireConfirmedPhoneNumber = authorizeSettings.RequireConfirmedPhoneNumber;
             });
+        }
+
+        public static void ConfigServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            var conn = configuration.GetConnectionString("DotNetCoreWeb");
+            services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
+
+            services.AddMvc(options => { options.Config(); });
+
+            services.AddIdentity<Account, IdentityRole>()
+            .AddEntityFrameworkStores<WebDbContext>()
+            .AddDefaultTokenProviders();
+
+            //cach
+            var redisEnable = configuration.GetValue<bool>("Redis:Enable");
+            if(redisEnable)
+            {
+
+                services.AddDistributedRedisCache(options =>
+                {
+                    options.Configuration = configuration.GetValue<string>("Redis:Configration");
+                    options.InstanceName = configuration.GetValue<string>("Redis:Instance");
+                });
+
+            }
+            else
+            {
+                services.AddMemoryCache();
+            }
+
+            //web site services and some configs
+            EngineContext.Initialize(services, configuration,false);
+
+            ConfigAuthorize(services);
+
+            //start schedule task
+            if (!string.IsNullOrWhiteSpace(conn))
+            {
+                TaskManager.Instance.Initialize();
+                TaskManager.Instance.Start();
+            }
         }
     }
 }

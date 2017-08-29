@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DotNetCore.Core\DotNetCore.Core.csproj" />
     <ProjectReference Include="..\DotNetCore.Data\DotNetCore.Data.csproj" />
   </ItemGroup>

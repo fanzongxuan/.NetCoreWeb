@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DotNetCore.Core.Cache;
 using DotNetCore.Core.Domain.UserInfos;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Service.UserInfoService;
@@ -13,10 +14,13 @@ namespace DotNetCore.Web.Controllers
     public class UserInfoController : Controller
     {
         private readonly IUserinfoService _userInfoService;
+        private readonly ICacheManager _cacheManager;
 
-        public UserInfoController(IUserinfoService userInfoService)
+        public UserInfoController(IUserinfoService userInfoService,
+            ICacheManager cacheManager)
         {
             _userInfoService = userInfoService;
+            _cacheManager = cacheManager;
         }
 
         public IActionResult Index()
@@ -27,21 +31,23 @@ namespace DotNetCore.Web.Controllers
 
         public IActionResult Insert()
         {
-            var model = new UserInfoModel()
+            var entity = new UserInfo()
             {
                 LoginName = "test",
                 Password = "123456",
                 RealName = "我是你鸭哥",
-                PhoneNumber = "13814063516",
-                Email = "1027300882@qq.com",
                 LastLoginIpAddress = "192.168.0.0",
                 Sex = Sex.Man,
             };
-            var entity = AutoMapperConfiguration.Mapper.Map<UserInfoModel, UserInfo>(model);
             _userInfoService.Insert(entity);
-            _userInfoService.Delete(entity);
-            return Json(new { code = 1, mes = "Success" });
+            var userinfo = _userInfoService.GetById(entity.Id);
+            var userinfoFromCach = _userInfoService.GetById(entity.Id);
+            
+            userinfo.RealName = "6666";
+            _userInfoService.Update(userinfo);
+            _userInfoService.Delete(userinfo);
+            return View();
         }
-        
+
     }
 }

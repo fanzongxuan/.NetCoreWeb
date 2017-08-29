@@ -1,4 +1,7 @@
-﻿using DotNetCore.Core.Interface;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using DotNetCore.Core.Interface;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,13 +28,19 @@ namespace DotNetCore.Core.Infrastructure
             AutoMapperConfiguration.Init(configurationActions);
         }
 
-        protected virtual void AddServices(IServiceCollection services)
+        protected virtual void RegisterServices(IServiceCollection serviceCollection,IConfiguration configuration)
         {
+            var builder = new ContainerBuilder();
+            
             var typeFinder = new AppDomainTypeFinder();
             typeFinder.FindClassesOfType(typeof(IDependency))
                 .Select(Activator.CreateInstance)
-                .Cast<IDependency>().ToList()
-                .ForEach(x => { x.Register(services); });
+                .Cast<IDependency>()
+                .OrderBy(x=>x.Order).ToList()
+                .ForEach(x => { x.Register(builder, typeFinder, configuration); });
+            builder.Populate(serviceCollection);
+            var container = builder.Build();
+            this.ServiceProvider = new AutofacServiceProvider(container);
         }
 
         protected virtual void RunStartupTasks()
@@ -44,16 +53,14 @@ namespace DotNetCore.Core.Infrastructure
                 .ForEach(x => x.Execute());
         }
 
-        public ServiceProvider ServiceProvider { get; set; }
+        public IServiceProvider ServiceProvider { get; set; }
 
-        public IServiceCollection Services { get; set; }
+        public ContainerBuilder Builder { get; set; }
 
-        public void Initialize(IServiceCollection serviceCollection)
+        public void Initialize(IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            AddServices(serviceCollection);
+            RegisterServices(serviceCollection,configuration);
             RegisterMapperConfiguration();
-            ServiceProvider = serviceCollection.BuildServiceProvider();
-            Services = serviceCollection;
             RunStartupTasks();
         }
 
