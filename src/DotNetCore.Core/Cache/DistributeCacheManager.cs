@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace DotNetCore.Core.Cache
@@ -10,12 +13,15 @@ namespace DotNetCore.Core.Cache
     {
         private readonly IDistributedCache _distributedCache;
         private readonly ICacheManager _perRequestCacheManager;
+        private readonly IRedisConnectionWrapper _redisConnectionWrapper;
 
         public DistributeCacheManager(IDistributedCache distributedCache,
-            ICacheManager perRequestCacheManager)
+            ICacheManager perRequestCacheManager,
+            IRedisConnectionWrapper redisConnectionWrapper)
         {
             _distributedCache = distributedCache;
             _perRequestCacheManager = perRequestCacheManager;
+            _redisConnectionWrapper = redisConnectionWrapper;
         }
 
         protected virtual string Serialize(object item)
@@ -70,9 +76,15 @@ namespace DotNetCore.Core.Cache
 
         public void RemoveByPattern(string pattern)
         {
-                //foreach (var key in keys)
-                //    Remove(key);
-            
+            var _db = _redisConnectionWrapper.GetDatabase();
+
+            foreach (var ep in _redisConnectionWrapper.GetEndPoints())
+            {
+                var server = _redisConnectionWrapper.GetServer(ep);
+                var keys = server.Keys(database: _db.Database, pattern: "*" + pattern + "*");
+                foreach (var key in keys)
+                    Remove(key);
+            }
         }
 
         public void Set(string key, object data, int cacheTime)

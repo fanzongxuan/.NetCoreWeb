@@ -9,14 +9,15 @@ namespace DotNetCore.Core.Cache
 {
     public class PerRequestCacheManager : ICacheManager
     {
-        private readonly HttpContext _context;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         /// <summary>
         /// Ctor
         /// </summary>
         /// <param name="context">Context</param>
-        public PerRequestCacheManager()
+        public PerRequestCacheManager(IHttpContextAccessor contextAccessor)
         {
+            _contextAccessor = contextAccessor;
         }
 
         /// <summary>
@@ -24,8 +25,8 @@ namespace DotNetCore.Core.Cache
         /// </summary>
         protected virtual IDictionary<object, object> GetItems()
         {
-            if (_context != null)
-                return _context.Items;
+            if (_contextAccessor.HttpContext != null)
+                return _contextAccessor.HttpContext.Items;
 
             return null;
         }

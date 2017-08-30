@@ -27,6 +27,8 @@ namespace DotNetCore.Core.Infrastructure.DependencyManagement
             {
                 builder.RegisterType<MemoryCacheManager>().As<ICacheManager>().Named<ICacheManager>("cache_static");
             }
+            builder.RegisterType<RedisConnectionWrapper>().As<IRedisConnectionWrapper>().InstancePerLifetimeScope();
+            
         }
     }
 }

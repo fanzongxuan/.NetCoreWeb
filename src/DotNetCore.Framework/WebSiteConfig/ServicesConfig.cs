@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using DotNetCore.Service.ScheduleTasks;
+using System;
 
 namespace DotNetCore.Framework.WebSiteConfig
 {
@@ -40,8 +41,9 @@ namespace DotNetCore.Framework.WebSiteConfig
             });
         }
 
-        public static void ConfigServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceProvider ConfigServices(this IServiceCollection services, IConfiguration configuration)
         {
+            //default container config
             var conn = configuration.GetConnectionString("DotNetCoreWeb");
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
 
@@ -59,7 +61,6 @@ namespace DotNetCore.Framework.WebSiteConfig
                 services.AddDistributedRedisCache(options =>
                 {
                     options.Configuration = configuration.GetValue<string>("Redis:Configration");
-                    options.InstanceName = configuration.GetValue<string>("Redis:Instance");
                 });
 
             }
@@ -69,16 +70,19 @@ namespace DotNetCore.Framework.WebSiteConfig
             }
 
             //web site services and some configs
-            EngineContext.Initialize(services, configuration,false);
+            EngineContext.Initialize(services, configuration, false);
 
             ConfigAuthorize(services);
 
+            
             //start schedule task
             if (!string.IsNullOrWhiteSpace(conn))
             {
                 TaskManager.Instance.Initialize();
                 TaskManager.Instance.Start();
             }
+            
+            return EngineContext.Current.ServiceProvider;
         }
     }
 }

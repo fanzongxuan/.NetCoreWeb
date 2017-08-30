@@ -38,8 +38,10 @@ namespace DotNetCore.Core.Infrastructure
                 .Cast<IDependency>()
                 .OrderBy(x=>x.Order).ToList()
                 .ForEach(x => { x.Register(builder, typeFinder, configuration); });
+
             builder.Populate(serviceCollection);
             var container = builder.Build();
+
             this.ServiceProvider = new AutofacServiceProvider(container);
         }
 
