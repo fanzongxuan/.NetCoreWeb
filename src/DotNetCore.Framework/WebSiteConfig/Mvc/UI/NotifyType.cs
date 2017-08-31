@@ -1,4 +1,4 @@
-﻿namespace DotNetCore.Framework.Mvc.UI
+﻿namespace DotNetCore.Framework.WebSiteConfig.Mvc.UI
 {
     public enum NotifyType
     {

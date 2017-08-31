@@ -7,6 +7,7 @@ using DotNetCore.Core.Cache;
 using Microsoft.Extensions.Configuration;
 using Autofac;
 using Autofac.Core;
+using DotNetCore.Core.ElasticSearch;
 
 namespace DotNetCore.Core.Infrastructure.DependencyManagement
 {
@@ -28,7 +29,7 @@ namespace DotNetCore.Core.Infrastructure.DependencyManagement
                 builder.RegisterType<MemoryCacheManager>().As<ICacheManager>().Named<ICacheManager>("cache_static");
             }
             builder.RegisterType<RedisConnectionWrapper>().As<IRedisConnectionWrapper>().InstancePerLifetimeScope();
-            
+            builder.RegisterType<ESClientProvider>().SingleInstance();
         }
     }
 }

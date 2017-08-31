@@ -1,7 +1,6 @@
 ﻿using DotNetCore.Core.Domain.UserInfos;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Data;
-using DotNetCore.Framework.Mvc.Config;
 using DotNetCore.Service.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using DotNetCore.Service.ScheduleTasks;
 using System;
+using DotNetCore.Framework.WebSiteConfig.Mvc.Config;
+using DotNetCore.Core.ElasticSearch;
 
 namespace DotNetCore.Framework.WebSiteConfig
 {
@@ -47,13 +48,18 @@ namespace DotNetCore.Framework.WebSiteConfig
             var conn = configuration.GetConnectionString("DotNetCoreWeb");
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
 
+            //config mvc
             services.AddMvc(options => { options.Config(); });
 
+            //get ElasticSearch options
+            services.Configure<ESOptions>(configuration.GetSection("ElasticSearch"));
+
+            // add IdentityRole service
             services.AddIdentity<Account, IdentityRole>()
             .AddEntityFrameworkStores<WebDbContext>()
             .AddDefaultTokenProviders();
 
-            //cach
+            //cache
             var redisEnable = configuration.GetValue<bool>("Redis:Enable");
             if(redisEnable)
             {
@@ -72,8 +78,8 @@ namespace DotNetCore.Framework.WebSiteConfig
             //web site services and some configs
             EngineContext.Initialize(services, configuration, false);
 
+            //config  authorize
             ConfigAuthorize(services);
-
             
             //start schedule task
             if (!string.IsNullOrWhiteSpace(conn))

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetCore.Framework.Mvc.ActionFilter
+namespace DotNetCore.Framework.WebSiteConfig.Mvc.ActionFilter
 {
     public class RequestTrackFilter : IActionFilter
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetCore.Framework.Mvc.Config
+namespace DotNetCore.Framework.WebSiteConfig.Mvc.Config
 {
     public static class RuoteConfig
     {

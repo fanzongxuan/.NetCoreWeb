@@ -1,16 +1,6 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
-using DotNetCore.Core.Infrastructure;
-using DotNetCore.Data;
-using DotNetCore.Framework.Mvc.Config;
-using DotNetCore.Framework.WebSiteConfig;
-using DotNetCore.Service.ScheduleTasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using DotNetCore.Framework.WebSiteConfig;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.IO;
 
 namespace DotNetCore.Framework.Infrastructure
 {

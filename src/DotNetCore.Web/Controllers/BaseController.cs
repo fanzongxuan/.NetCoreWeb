@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using DotNetCore.Framework.Mvc.UI;
 using Microsoft.Extensions.Logging;
 using DotNetCore.Core.Infrastructure;
+using DotNetCore.Framework.WebSiteConfig.Mvc.UI;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

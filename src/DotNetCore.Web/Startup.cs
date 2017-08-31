@@ -4,10 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac;
 using DotNetCore.Framework.WebSiteConfig;
-using Autofac.Extensions.DependencyInjection;
 using System;
-using DotNetCore.Framework.Mvc.Config;
 using DotNetCore.Core.Infrastructure;
+using DotNetCore.Framework.WebSiteConfig.Mvc.Config;
+using Microsoft.Extensions.Logging;
+using DotNetCore.Core.Logger;
+using DotNetCore.Core.ElasticSearch;
+using Microsoft.Extensions.Options;
 
 namespace DotNetCore.Web
 {
@@ -34,8 +37,20 @@ namespace DotNetCore.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+
+            //enable elastic search logger provier
+            var opts = EngineContext.Current.GetService<IOptions<ESOptions>>();
+            if (opts != null && opts.Value.Enable)
+            {
+                loggerFactory.AddESLogger(Configuration.GetSection("Logging"));
+            }
+
+            if (env.IsDevelopment())
+                loggerFactory.AddDebug();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

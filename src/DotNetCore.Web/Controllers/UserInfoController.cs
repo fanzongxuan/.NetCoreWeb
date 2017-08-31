@@ -31,6 +31,7 @@ namespace DotNetCore.Web.Controllers
 
         public IActionResult Insert()
         {
+            throw new System.Exception("报错啦！");
             var entity = new UserInfo()
             {
                 LoginName = "test",
