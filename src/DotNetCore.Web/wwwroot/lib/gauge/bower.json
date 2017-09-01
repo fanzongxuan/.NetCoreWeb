@@ -1,0 +1,10 @@
+{
+  "name": "gauge",
+  "version": "1.0.0",
+  "main": [
+    "src/gauge.js"
+  ],
+  "ignore": [
+    "**/.*"
+  ]
+}

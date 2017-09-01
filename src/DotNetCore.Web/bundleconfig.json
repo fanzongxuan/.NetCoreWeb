@@ -15,9 +15,59 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/css/admin/site.admin.min.css",
+    // An array of relative input file paths. Globbing patterns supported
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "wwwroot/lib/font-awesome/css/font-awesome.min.css",
+      "wwwroot/lib/nprogress/nprogress.css",
+      "wwwroot/lib/iCheck/skins/flat/green.css",
+      "wwwroot/lib/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
+      "wwwroot/lib/jqvmap/dist/jqvmap.min.css",
+      "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.css",
+      //"wwwroot/css/admin/custom.min.css"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
       "wwwroot/js/site.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/admin/site.admin.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.min.js",
+      "wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
+      "wwwroot/lib/fastclick/lib/fastclick.js",
+      "wwwroot/lib/nprogress/nprogress.js",
+      "wwwroot/lib/chart.js/dist/Chart.js",
+      "wwwroot/lib/gauge/src/gauge.min.js",
+      "wwwroot/lib/bootstrap-progressbar/bootstrap-progressbar.min.js",
+      "wwwroot/lib/iCheck/icheck.min.js",
+      "wwwroot/lib/skycons/skycons.js",
+      "wwwroot/lib/Flot/jquery.flot.js",
+      "wwwroot/lib/Flot/jquery.flot.pie.js",
+      "wwwroot/lib/Flot/jquery.flot.time.js",
+      "wwwroot/lib/Flot/jquery.flot.stack.js",
+      "wwwroot/lib/Flot/jquery.flot.resize.js",
+      "wwwroot/lib/flot-orderBars/js/jquery.flot.orderBars.js",
+      "wwwroot/lib/flot-spline/js/jquery.flot.spline.min.js",
+      "wwwroot/lib/flot.curvedlines/curvedLines.js",
+      "wwwroot/lib/DateJS/build/date.js",
+      "wwwroot/lib/jqvmap/dist/jquery.vmap.min.js",
+      "wwwroot/lib/jqvmap/dist/maps/jquery.vmap.world.js",
+      "wwwroot/lib/jqvmap/examples/js/jquery.vmap.sampledata.js",
+      "wwwroot/lib/moment/min/moment.min.js",
+      "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.js",
+      "wwwroot/js/admin/custom.min.js"
     ],
     // Optionally specify minification options
     "minify": {

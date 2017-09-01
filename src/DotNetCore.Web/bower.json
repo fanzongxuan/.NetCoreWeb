@@ -5,6 +5,21 @@
     "bootstrap": "3.3.7",
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
-    "jquery-validation-unobtrusive": "3.2.6"
+    "jquery-validation-unobtrusive": "3.2.6",
+    "bootstrap-daterangepicker": "v2.1.24",
+    "font-awesome": "Font-Awesome#v4.7.0",
+    "nprogress": "v0.2.0",
+    "bootstrap-progressbar": "v0.9.0",
+    "jqvmap": "v1.5.1",
+    "iCheck": "1.0.2",
+    "fastclick": "v1.0.6",
+    "gauge": "1.0.1",
+    "skycons": "*",
+    "Flot": "flot#v0.8.3",
+    "flot-orderBars": "1.0.0",
+    "flot-spline": "0.8.2",
+    "flot.curvedlines": "1.1.1",
+    "DateJS": "v1.0.0-rc3",
+    "chart.js": "chartjs#v2.5.0"
   }
 }

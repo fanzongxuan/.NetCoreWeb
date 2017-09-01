@@ -1,0 +1,21 @@
+{
+  "name": "gauge",
+  "version": "1.0.1",
+  "main": [
+    "src/gauge.js"
+  ],
+  "ignore": [
+    "**/.*"
+  ],
+  "homepage": "https://github.com/nimrin/gauge",
+  "_release": "1.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.1",
+    "commit": "cf86614c7ff799474bf9a7ee8c4896061df1596b"
+  },
+  "_source": "https://github.com/nimrin/gauge.git",
+  "_target": "1.0.1",
+  "_originalSource": "gauge",
+  "_direct": true
+}
