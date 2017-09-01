@@ -24,7 +24,7 @@
       "wwwroot/lib/iCheck/skins/flat/green.css",
       "wwwroot/lib/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
       "wwwroot/lib/jqvmap/dist/jqvmap.min.css",
-      "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.css",
+      "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.css"
       //"wwwroot/css/admin/custom.min.css"
     ]
   },
