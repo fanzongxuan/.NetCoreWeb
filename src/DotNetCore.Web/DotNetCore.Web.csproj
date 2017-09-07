@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\UserInfo\**" />
+    <Content Remove="Views\UserInfo\**" />
+    <EmbeddedResource Remove="Views\UserInfo\**" />
+    <None Remove="Views\UserInfo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.4.337" />
@@ -26,8 +33,8 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Views\UserInfo\" />
-    <Folder Include="wwwroot\js\admin\" />
+    <Folder Include="wwwroot\css\page\login\" />
+    <Folder Include="wwwroot\images\page\" />
   </ItemGroup>
 
 </Project>

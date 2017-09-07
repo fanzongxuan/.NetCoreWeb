@@ -10,8 +10,7 @@ using DotNetCore.Web.Areas.Admin.Models.Setting;
 
 namespace DotNetCore.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    public class SettingController : Controller
+    public class SettingController : BaseAdminController
     {
         private readonly ISettingService _settingService;
 

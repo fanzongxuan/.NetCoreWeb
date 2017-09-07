@@ -31,7 +31,6 @@ namespace DotNetCore.Web.Controllers
 
         public IActionResult Insert()
         {
-            throw new System.Exception("报错啦！");
             var entity = new UserInfo()
             {
                 LoginName = "test",
@@ -43,7 +42,7 @@ namespace DotNetCore.Web.Controllers
             _userInfoService.Insert(entity);
             var userinfo = _userInfoService.GetById(entity.Id);
             var userinfoFromCach = _userInfoService.GetById(entity.Id);
-            
+
             userinfo.RealName = "6666";
             _userInfoService.Update(userinfo);
             _userInfoService.Delete(userinfo);

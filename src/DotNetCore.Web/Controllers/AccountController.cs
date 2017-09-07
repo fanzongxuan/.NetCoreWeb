@@ -20,14 +20,6 @@ namespace DotNetCore.Web.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet]
-        public IActionResult Register()
-        {
-            if (User.Identity.IsAuthenticated)
-                return RedirectToAction("Index", "home");
-            return View();
-        }
-
         [HttpPost]
         public IActionResult Register(RegisterModel model)
         {
@@ -54,7 +46,11 @@ namespace DotNetCore.Web.Controllers
             {
                 ErrorNotification(string.Join("|", ModelState.Errors()));
             }
-            return View(model);
+            var authModel = new AuthModel()
+            {
+                RegisterModel = model
+            };
+            return RedirectToAction("Login", authModel);
         }
 
         [HttpGet]
@@ -63,7 +59,9 @@ namespace DotNetCore.Web.Controllers
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "home");
 
-            var model = new LoginModel { ReturnUrl = returnUrl };
+            var model = new AuthModel();
+            model.LoginModel.ReturnUrl = returnUrl;
+
             return View(model);
         }
 

@@ -9,13 +9,17 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/css/page/login/login.min.css",
+    "outputFileName": "wwwroot/css/admin/site.admin.min.css",
+    // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
-      "wwwroot/css/page/login/login.css"
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+      "wwwroot/lib/font-awesome/css/font-awesome.min.css",
+      "wwwroot/lib/nprogress/nprogress.css",
+      "wwwroot/lib/animate.css/animate.min.css",
     ]
   },
   {
-    "outputFileName": "wwwroot/css/admin/site.admin.min.css",
+    "outputFileName": "wwwroot/css/page/login/login.min.css",
     // An array of relative input file paths. Globbing patterns supported
     "inputFiles": [
       "wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
@@ -23,9 +27,6 @@
       "wwwroot/lib/nprogress/nprogress.css",
       "wwwroot/lib/iCheck/skins/flat/green.css",
       "wwwroot/lib/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
-      "wwwroot/lib/jqvmap/dist/jqvmap.min.css",
-      "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.css"
-      //"wwwroot/css/admin/custom.min.css"
     ]
   },
   {
@@ -52,19 +53,7 @@
       "wwwroot/lib/gauge/src/gauge.min.js",
       "wwwroot/lib/bootstrap-progressbar/bootstrap-progressbar.min.js",
       "wwwroot/lib/iCheck/icheck.min.js",
-      "wwwroot/lib/skycons/skycons.js",
-      "wwwroot/lib/Flot/jquery.flot.js",
-      "wwwroot/lib/Flot/jquery.flot.pie.js",
-      "wwwroot/lib/Flot/jquery.flot.time.js",
-      "wwwroot/lib/Flot/jquery.flot.stack.js",
-      "wwwroot/lib/Flot/jquery.flot.resize.js",
-      "wwwroot/lib/flot-orderBars/js/jquery.flot.orderBars.js",
-      "wwwroot/lib/flot-spline/js/jquery.flot.spline.min.js",
-      "wwwroot/lib/flot.curvedlines/curvedLines.js",
       "wwwroot/lib/DateJS/build/date.js",
-      "wwwroot/lib/jqvmap/dist/jquery.vmap.min.js",
-      "wwwroot/lib/jqvmap/dist/maps/jquery.vmap.world.js",
-      "wwwroot/lib/jqvmap/examples/js/jquery.vmap.sampledata.js",
       "wwwroot/lib/moment/min/moment.min.js",
       "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.js",
       "wwwroot/js/admin/custom.min.js"
