@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DotNetCore.Core.Cache;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Service.UserInfoService;
 using DotNetCore.Web.Models.UserInfos;

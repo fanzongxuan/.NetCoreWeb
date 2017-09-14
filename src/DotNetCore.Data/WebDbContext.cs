@@ -3,7 +3,7 @@ using DotNetCore.Core;
 using DotNetCore.Data.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
 using System;
 using System.Data.Common;
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DotNetCore.Data
 {
-    public class WebDbContext : IdentityDbContext<Account>, IDbContext
+    public class WebDbContext : IdentityDbContext<Account,AccountRole,string>, IDbContext
     {
 
         public WebDbContext(DbContextOptions<WebDbContext> options) : base(options)

@@ -6,11 +6,11 @@ using Autofac;
 using DotNetCore.Framework.WebSiteConfig;
 using System;
 using DotNetCore.Core.Infrastructure;
-using DotNetCore.Framework.WebSiteConfig.Mvc.Config;
 using Microsoft.Extensions.Logging;
 using DotNetCore.Core.Logger;
 using DotNetCore.Core.ElasticSearch;
 using Microsoft.Extensions.Options;
+using DotNetCore.Framework.Mvc.Config;
 
 namespace DotNetCore.Web
 {

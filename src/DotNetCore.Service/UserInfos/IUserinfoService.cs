@@ -1,4 +1,4 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
+﻿using DotNetCore.Core.Domain.Accounts;
 using System;
 using System.Collections.Generic;
 using System.Text;

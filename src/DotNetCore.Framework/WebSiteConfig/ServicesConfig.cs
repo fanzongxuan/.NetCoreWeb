@@ -1,4 +1,4 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
+﻿using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Data;
 using DotNetCore.Service.Settings;
@@ -8,8 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using DotNetCore.Service.ScheduleTasks;
 using System;
-using DotNetCore.Framework.WebSiteConfig.Mvc.Config;
 using DotNetCore.Core.ElasticSearch;
+using DotNetCore.Framework.Mvc.Config;
 
 namespace DotNetCore.Framework.WebSiteConfig
 {
@@ -55,7 +55,7 @@ namespace DotNetCore.Framework.WebSiteConfig
             services.Configure<ESOptions>(configuration.GetSection("ElasticSearch"));
 
             // add IdentityRole service
-            services.AddIdentity<Account, IdentityRole>()
+            services.AddIdentity<Account, AccountRole>()
             .AddEntityFrameworkStores<WebDbContext>()
             .AddDefaultTokenProviders();
 

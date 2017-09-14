@@ -1,4 +1,4 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
+﻿using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Interface;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -24,5 +24,27 @@ namespace DotNetCore.Service.Accounts
         SignInResult LoginWithUserNameAndPwd(string userName, string pwd, bool remeberMe, bool lockOutOnFail);
 
         void Login(Account user, bool remeberMe);
+
+        Account GetByName(string accountName);
+
+        Account GetAuthenticationAccount();
+
+        bool IsInRole(Account account, string roleName);
+
+        AccountRole GetAccountRoleBySystemName(string systemName);
+
+        Account InsertGuestAccount();
+
+        bool AccountIsExist(string userName);
+
+        IdentityResult AddToRole(Account account, string roleName);
+
+        bool RoleExists(string roleName);
+
+        IdentityResult CreateRole(AccountRole role);
+
+        AccountRole FindRoleByName(string name);
+
+        IList<string> GetRoleNamesByAccount(Account account);
     }
 }

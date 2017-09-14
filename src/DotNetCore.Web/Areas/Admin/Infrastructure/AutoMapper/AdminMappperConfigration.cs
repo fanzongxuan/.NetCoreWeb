@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using DotNetCore.Core.Interface;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Web.Areas.Admin.Models.Setting;
 
 namespace DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper

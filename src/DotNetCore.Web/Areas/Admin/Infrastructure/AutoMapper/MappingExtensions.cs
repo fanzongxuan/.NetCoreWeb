@@ -1,4 +1,4 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
+﻿using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Web.Areas.Admin.Models.Setting;
 

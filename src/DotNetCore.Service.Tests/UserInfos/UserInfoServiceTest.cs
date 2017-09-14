@@ -1,5 +1,5 @@
 ﻿using DotNetCore.Core.Cache;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Framework.Infrastructure;
 using DotNetCore.Service.UserInfoService;

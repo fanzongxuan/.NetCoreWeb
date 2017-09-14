@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Web.Models.UserInfos;
 
 namespace DotNetCore.Web.Infrastructure.AutoMapper

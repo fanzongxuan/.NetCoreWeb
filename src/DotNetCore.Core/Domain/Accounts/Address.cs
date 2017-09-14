@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotNetCore.Core.Domain.UserInfos
+namespace DotNetCore.Core.Domain.Accounts
 {
     public class Address : BaseEntity
     {

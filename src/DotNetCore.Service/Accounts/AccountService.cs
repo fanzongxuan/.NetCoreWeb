@@ -1,24 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Interface;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Linq;
 using DotNetCore.Core;
+using Microsoft.AspNetCore.Http;
+using DotNetCore.Core.Cache;
 
 namespace DotNetCore.Service.Accounts
 {
     public class AccountService : IAccountService
     {
-        private SignInManager<Account> _signManager;
-        private UserManager<Account> _userManager;
+        #region Const
+
+        private const string ACCOUNT_BY_SYSTEMNAME_KEY = "Web.accountrole.systemname-{0}";
+        #endregion
+
+        #region Ctor
+
+        private readonly SignInManager<Account> _signManager;
+        private readonly UserManager<Account> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly RoleManager<AccountRole> _accountRoleManager;
+        private readonly ICacheManager _cacheManager;
+        private Account _cachedAccount;
+        #endregion
+
+        #region Methods
+
         public AccountService(UserManager<Account> userManager,
-            SignInManager<Account> signManager)
+            SignInManager<Account> signManager,
+            IHttpContextAccessor httpContextAccessor,
+            RoleManager<AccountRole> accountRoleManager,
+            ICacheManager cacheManager)
         {
             _userManager = userManager;
             _signManager = signManager;
+            _httpContextAccessor = httpContextAccessor;
+            _cacheManager = cacheManager;
+            _accountRoleManager = accountRoleManager;
         }
 
         public IdentityResult Delete(Account entitiy)
@@ -39,10 +62,13 @@ namespace DotNetCore.Service.Accounts
             return new PagedList<Account>(query, pageIndex, pageSize);
         }
 
-        public IdentityResult Register(Account entitiy,string pwd)
+        public IdentityResult Register(Account entitiy, string pwd)
         {
             if (entitiy == null)
                 throw new ArgumentNullException("entitiy");
+
+            entitiy.CreateOnUtc = DateTime.UtcNow;
+            entitiy.LastActivityDateUtc = DateTime.UtcNow;
             var res = _userManager.CreateAsync(entitiy, pwd);
             return res.Result;
         }
@@ -51,16 +77,19 @@ namespace DotNetCore.Service.Accounts
         {
             if (entitiy == null)
                 throw new ArgumentNullException("entitiy");
+
             return _userManager.UpdateAsync(entitiy).Result;
         }
 
         public SignInResult LoginWithUserNameAndPwd(string userName, string pwd, bool remeberMe, bool lockOutOnFail)
         {
             return _signManager.PasswordSignInAsync(userName, pwd, remeberMe, lockOutOnFail).Result;
+
         }
 
-        public void Login(Account user,bool remeberMe)
+        public void Login(Account user, bool remeberMe)
         {
+            user.LastActivityDateUtc = DateTime.UtcNow;
             _signManager.SignInAsync(user, remeberMe);
         }
 
@@ -68,5 +97,116 @@ namespace DotNetCore.Service.Accounts
         {
             _signManager.SignOutAsync();
         }
+
+        public Account GetByName(string accountName)
+        {
+            if (string.IsNullOrEmpty(accountName))
+                return null;
+            return _userManager.FindByNameAsync(accountName).Result;
+        }
+
+        public Account GetAuthenticationAccount()
+        {
+            if (_cachedAccount != null)
+                return _cachedAccount;
+
+            if (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.Request == null || !_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated || _httpContextAccessor.HttpContext.User == null)
+                return null;
+
+            var identityPrincipal = _httpContextAccessor.HttpContext.User;
+            var account = _userManager.GetUserAsync(identityPrincipal).Result;
+
+            if (account != null)
+                _cachedAccount = account;
+            return _cachedAccount;
+        }
+
+        public bool IsInRole(Account account, string roleName)
+        {
+            return _userManager.IsInRoleAsync(account, roleName).Result;
+        }
+
+        public virtual AccountRole GetAccountRoleBySystemName(string systemName)
+        {
+            if (String.IsNullOrWhiteSpace(systemName))
+                return null;
+
+            string key = string.Format(ACCOUNT_BY_SYSTEMNAME_KEY, systemName);
+            return _cacheManager.Get(key, () =>
+            {
+                var query = from cr in _accountRoleManager.Roles
+                            orderby cr.Id
+                            where cr.Name == systemName
+                            select cr;
+                var accountRole = query.FirstOrDefault();
+                return accountRole;
+            });
+        }
+
+        public Account InsertGuestAccount()
+        {
+
+            var account = new Account()
+            {
+                UserName = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
+                CreateOnUtc = DateTime.UtcNow,
+                LastActivityDateUtc = DateTime.UtcNow
+            };
+            var res = _userManager.CreateAsync(account).Result;
+            if (res.Succeeded)
+            {
+                var guestRole = GetAccountRoleBySystemName(AccountRoleNames.Guest);
+                if (guestRole == null)
+                    throw new ArgumentException("'Guests' role could not be loaded");
+                var roleRes = _userManager.AddToRoleAsync(account, guestRole.Name).Result;
+                if (roleRes.Succeeded)
+                {
+                    return account;
+                }
+                else
+                {
+                    throw new Exception("attach guest to guest role error!");
+                }
+            }
+            else
+            {
+                throw new Exception("Insert a guest error!");
+            }
+        }
+
+        public bool AccountIsExist(string userName)
+        {
+            return _userManager.Users.Any(x => x.UserName == userName);
+        }
+
+        public IdentityResult AddToRole(Account account, string roleName)
+        {
+            return _userManager.AddToRoleAsync(account, roleName).Result;
+        }
+
+        public bool RoleExists(string roleName)
+        {
+            return _accountRoleManager.RoleExistsAsync(roleName).Result;
+        }
+
+        public IdentityResult CreateRole(AccountRole role)
+        {
+            return _accountRoleManager.CreateAsync(role).Result;
+        }
+
+        public AccountRole FindRoleByName(string name)
+        {
+            return _accountRoleManager.FindByNameAsync(name).Result;
+        }
+
+        public IList<string> GetRoleNamesByAccount(Account account)
+        {
+            if (account == null)
+                throw new ArgumentNullException("account");
+
+            return _userManager.GetRolesAsync(account).Result;
+        }
+        #endregion
     }
 }

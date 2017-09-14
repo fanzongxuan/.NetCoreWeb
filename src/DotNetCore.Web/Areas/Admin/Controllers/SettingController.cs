@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DotNetCore.Service.Settings;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper;
 using DotNetCore.Web.Areas.Admin.Models.Setting;
 

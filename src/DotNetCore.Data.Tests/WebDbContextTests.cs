@@ -3,7 +3,7 @@ using DotNetCore.Framework.Infrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
 
 namespace DotNetCore.Data.Tests

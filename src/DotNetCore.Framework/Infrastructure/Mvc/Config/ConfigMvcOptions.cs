@@ -1,7 +1,7 @@
-﻿using DotNetCore.Framework.WebSiteConfig.Mvc.ActionFilter;
+﻿using DotNetCore.Framework.Mvc.ActionFilter;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DotNetCore.Framework.WebSiteConfig.Mvc.Config
+namespace DotNetCore.Framework.Mvc.Config
 {
     /// <summary>
     /// config mvc options

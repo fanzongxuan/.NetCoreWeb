@@ -10,7 +10,7 @@ namespace DotNetCore.Data
 {
     public class EfStrartUpTask : IStartupTask
     {
-        public int Order => 1;
+        public int Order => 0;
 
         public void Execute()
         {

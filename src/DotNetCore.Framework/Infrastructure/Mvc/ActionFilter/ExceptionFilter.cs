@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace DotNetCore.Framework.WebSiteConfig.Mvc.ActionFilter
+namespace DotNetCore.Framework.Mvc.ActionFilter
 {
     public class ExceptionFilter : IExceptionFilter
     {

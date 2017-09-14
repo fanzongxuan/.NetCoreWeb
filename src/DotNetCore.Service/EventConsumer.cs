@@ -1,4 +1,4 @@
-﻿using DotNetCore.Core.Domain.UserInfos;
+﻿using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Events;
 using DotNetCore.Service.Events;
 using Microsoft.Extensions.Logging;

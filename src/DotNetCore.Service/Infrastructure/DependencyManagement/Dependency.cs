@@ -12,6 +12,7 @@ using DotNetCore.Service.Accounts;
 using DotNetCore.Service.Settings;
 using Microsoft.Extensions.Configuration;
 using Autofac;
+using DotNetCore.Service.Security;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -22,7 +23,7 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
         public void Register(ContainerBuilder builder, AppDomainTypeFinder typeFinder, IConfiguration configuration)
         {
             var assemblies = typeFinder.GetAssemblies();
-            
+
             //Register my services
             typeFinder.FindInterfacesOfType(typeof(IBaseService<>), assemblies)
                  .ToList()
@@ -77,8 +78,10 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
 
                     builder.RegisterType(x).SingleInstance();
                 });
-            
+
             builder.RegisterType<SettingService>().As<ISettingService>().InstancePerLifetimeScope();
+            builder.RegisterType<StandardPermissionProvider>().As<IPermissionProvider>().SingleInstance();
+            builder.RegisterType<PermissionService>().As<IPermissionService>().InstancePerLifetimeScope();
 
         }
     }

@@ -108,7 +108,9 @@
                                 <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                                     <li>
                                         <a>
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
+                                            <span class="image">
+                                                @*<img src="images/img.jpg" alt="Profile Image" />*@
+                                            </span>
                                             <span>
                                                 <span>@User.Identity.Name</span>
                                                 <span class="time">3 mins ago</span>
@@ -134,7 +136,7 @@
             </div>
             <!-- page content -->
             <div class="right_col" role="main">
-              @RenderBody()
+                @RenderBody()
             </div>
             <!-- footer content -->
             <footer>
@@ -145,7 +147,7 @@
             </footer>
         </div>
     </div>
-    <script src="~/js/custom.min.js"></script>
     <script src="~/js/admin/site.admin.min.js"></script>
+    <script src="~/js/custom.min.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DotNetCore.Core.Domain.UserInfos
+namespace DotNetCore.Core.Domain.Accounts
 {
     public class UserInfo: BaseEntity
     {

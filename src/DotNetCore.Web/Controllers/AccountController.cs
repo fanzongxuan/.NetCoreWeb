@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DotNetCore.Web.Models.Account;
 using Microsoft.AspNetCore.Identity;
-using DotNetCore.Core.Domain.UserInfos;
+using DotNetCore.Core.Domain.Accounts;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +15,7 @@ namespace DotNetCore.Web.Controllers
     public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
+
         public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
@@ -54,15 +55,18 @@ namespace DotNetCore.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl = "")
+        public IActionResult Login(string returnUrl = "", AuthModel authModel = null)
         {
             if (User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "home");
 
-            var model = new AuthModel();
-            model.LoginModel.ReturnUrl = returnUrl;
+            if (authModel == null)
+            {
+                authModel = new AuthModel();
+                authModel.LoginModel.ReturnUrl = returnUrl;
+            }
 
-            return View(model);
+            return View(authModel);
         }
 
         [HttpPost]
@@ -87,13 +91,19 @@ namespace DotNetCore.Web.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
-                ErrorNotification("用户名或密码错误！");
+                ErrorNotification("User name or password error!");
             }
             else
             {
                 ErrorNotification(string.Join("|", ModelState.Errors()));
             }
-            return View(model);
+
+            var authModel = new AuthModel()
+            {
+                LoginModel = model
+            };
+
+            return View(authModel);
         }
 
         [Authorize]
