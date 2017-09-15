@@ -1,4 +1,5 @@
-﻿using DotNetCore.Core.Infrastructure;
+﻿using DotNetCore.Core.Domain.Security;
+using DotNetCore.Core.Infrastructure;
 using DotNetCore.Service.Security;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -14,28 +15,34 @@ namespace DotNetCore.Framework.Controllers
     public class AdminAuthorizeAttribute : Attribute, IAuthorizationFilter
     {
 
+        #region Uilities
+
         private void HandleUnauthorizedRequest(AuthorizationFilterContext filterContext)
         {
             filterContext.Result = new UnauthorizedResult();
         }
 
-      
+
+        public virtual bool HasAdminAccess()
+        {
+            var permissionService = EngineContext.Current.GetService<IPermissionService>();
+            return permissionService.Authorize(StandardPermissionProvider.AccessAdminPanel);
+
+        }
+        #endregion
+
+        #region Methods
 
         public void OnAuthorization(AuthorizationFilterContext filterContext)
         {
             if (filterContext == null)
                 throw new ArgumentNullException("filterContext");
 
-            if(!this.HasAdminAccess())
+            if (!this.HasAdminAccess())
                 this.HandleUnauthorizedRequest(filterContext);
 
         }
+        #endregion
 
-        public virtual bool HasAdminAccess()
-        {
-            var permissionService = EngineContext.Current.GetService<IPermissionService>();
-            bool result = permissionService.Authorize(StandardPermissionProvider.AccessAdminPanel);
-            return result;
-        }
     }
 }

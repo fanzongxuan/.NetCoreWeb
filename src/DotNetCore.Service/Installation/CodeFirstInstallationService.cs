@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DotNetCore.Service.Accounts;
+using DotNetCore.Service.Security;
+using DotNetCore.Core.Infrastructure;
+using DotNetCore.Core.Extensions;
 
 namespace DotNetCore.Service.Installation
 {
@@ -18,6 +21,7 @@ namespace DotNetCore.Service.Installation
         private readonly IRepository<ScheduleTask> _scheduleTaskRepository;
         private readonly ISettingService _settingService;
         private readonly IAccountService _accountService;
+        private readonly IPermissionService _permissionService;
         #endregion
 
         #region Ctor
@@ -26,11 +30,13 @@ namespace DotNetCore.Service.Installation
             ISettingService settingService,
             IAccountService accountService,
             RoleManager<AccountRole> roleManager,
-            UserManager<Account> userManager)
+            UserManager<Account> userManager,
+            IPermissionService permissionService)
         {
             _scheduleTaskRepository = scheduleTaskRepository;
             _settingService = settingService;
             _accountService = accountService;
+            _permissionService = permissionService;
         }
         #endregion
 
@@ -75,71 +81,40 @@ namespace DotNetCore.Service.Installation
 
         protected virtual void InstallRoles()
         {
-            // add system defalut roles
-            if (!_accountService.RoleExists(AccountRoleNames.Guest))
-                _accountService.CreateRole(new AccountRole(AccountRoleNames.Guest));
-
-            if (!_accountService.RoleExists(AccountRoleNames.Administrators))
-                _accountService.CreateRole(new AccountRole(AccountRoleNames.Administrators));
-
-            if (!_accountService.RoleExists(AccountRoleNames.Register))
-                _accountService.CreateRole(new AccountRole(AccountRoleNames.Register));
+            _accountService.InstallRoles();
         }
 
         protected virtual void InsertDefaultAccount()
         {
             //install defalut administration account
             var user = new Account() { UserName = "admin@123", Email = "admin@123.com" };
-            var isExist = _accountService.AccountIsExist(user.UserName);
-
-            if (!isExist)
-            {
-                var res = _accountService.Register(user, "Admin@123.com");
-                if (res != IdentityResult.Success)
-                {
-                    var errors = res.Errors.Select(x => x.Description);
-                    throw new Exception($"Inital administration failed! Error description:{string.Join(";", errors)}");
-                }
-                var roleRes = _accountService.AddToRole(user, AccountRoleNames.Administrators);
-                if (!roleRes.Succeeded)
-                    throw new Exception("attach administration to administration role failed");
-            }
+            _accountService.CreateAccountIfNotExist(user, "Admin@123.com");
+            _accountService.AddToRoleIfNotIn(user.UserName, AccountRoleNames.Administrators);
 
             // install defalut system backgroud task user
-            var isExist2 = _accountService.AccountIsExist(SystemAccountNames.BackgroundTask);
-
-            if (!isExist2)
-            {
-                var backGroundTask = new Account() { UserName = SystemAccountNames.BackgroundTask, Email = "BackgroundTask@123.com" };
-                var res = _accountService.Register(backGroundTask, "BackgroundTask@123.com");
-                if (res != IdentityResult.Success)
-                {
-                    var errors = res.Errors.Select(x => x.Description);
-                    throw new Exception($"Inital backGroundTask user failed! Error description:{string.Join(";", errors)}");
-                }
-                var roleRes = _accountService.AddToRole(backGroundTask, AccountRoleNames.SystemRole);
-                if (!roleRes.Succeeded)
-                    throw new Exception("attach backGroundTask to SystemRole role failed");
-            }
+            var backGroundTask = new Account() { UserName = SystemAccountNames.BackgroundTask, Email = "BackgroundTask@123.com" };
+            _accountService.CreateAccountIfNotExist(backGroundTask, "backGroundTask@123.com");
+            _accountService.AddToRoleIfNotIn(backGroundTask.UserName, AccountRoleNames.SystemRole);
 
             // install system search engine task user
-            var isExist3 = _accountService.AccountIsExist(SystemAccountNames.SearchEngine);
+            var searchEngine = new Account() { UserName = SystemAccountNames.SearchEngine, Email = "SearchEngine@123.com" };
+            _accountService.CreateAccountIfNotExist(searchEngine, "SearchEngine@123.com");
+            _accountService.AddToRoleIfNotIn(searchEngine.UserName, AccountRoleNames.SystemRole);
 
-            if (!isExist3)
-            {
-                var searchEngine = new Account() { UserName = SystemAccountNames.SearchEngine, Email = "SearchEngine@123.com" };
-                var res = _accountService.Register(searchEngine, "SearchEngine@123.com");
-                if (res != IdentityResult.Success)
-                {
-                    var errors = res.Errors.Select(x => x.Description);
-                    throw new Exception($"Inital SearchEngine user failed! Error description:{string.Join(";", errors)}");
-                }
-                var roleRes = _accountService.AddToRole(searchEngine, AccountRoleNames.SystemRole);
-                if (!roleRes.Succeeded)
-                    throw new Exception("Attach SearchEngine to systemRole role failed");
-
-            }
         }
+
+        protected virtual void InstallPermission()
+        {
+            var typeFinder = new AppDomainTypeFinder();
+            typeFinder.FindClassesOfType<IPermissionProvider>().ToList()
+                      .ForEach(x =>
+                      {
+                          var provider = Activator.CreateInstance(x) as IPermissionProvider;
+                          if (provider != null)
+                              _permissionService.InstallPermissions(provider);
+                      });
+        }
+
         #endregion
 
         #region Methods
@@ -149,6 +124,7 @@ namespace DotNetCore.Service.Installation
             InstallScheduleTasks();
             InstallSettings();
             InstallRoles();
+            InstallPermission();
             InsertDefaultAccount();
         }
         #endregion

@@ -33,18 +33,26 @@ namespace DotNetCore.Service.Accounts
 
         AccountRole GetAccountRoleBySystemName(string systemName);
 
+        void CreateAccountIfNotExist(Account account, string password);
+
         Account InsertGuestAccount();
 
         bool AccountIsExist(string userName);
 
         IdentityResult AddToRole(Account account, string roleName);
 
+        void AddToRoleIfNotIn(string userName, string roleName);
+
         bool RoleExists(string roleName);
 
         IdentityResult CreateRole(AccountRole role);
 
+        void CreateRoleIfNotExist(AccountRole role);
+
         AccountRole FindRoleByName(string name);
 
         IList<string> GetRoleNamesByAccount(Account account);
+
+        void InstallRoles();
     }
 }

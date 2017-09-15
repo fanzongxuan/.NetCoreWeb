@@ -76,7 +76,7 @@ namespace DotNetCore.Service.Security
             return _cacheManager.Get(key, () =>
             {
                 foreach (var permission1 in accountRole.RolePermissionMaps)
-                    if (permission1.AccountRole.Name.Equals(permissionRecordSystemName, StringComparison.InvariantCultureIgnoreCase))
+                    if (permission1.PermissionRecord.SystemName.Equals(permissionRecordSystemName, StringComparison.InvariantCultureIgnoreCase))
                         return true;
 
                 return false;

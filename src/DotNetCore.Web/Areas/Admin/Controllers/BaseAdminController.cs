@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DotNetCore.Web.Controllers;
 using DotNetCore.Framework.Controllers;
+using DotNetCore.Service.Security;
 
 namespace DotNetCore.Web.Areas.Admin.Controllers
 {

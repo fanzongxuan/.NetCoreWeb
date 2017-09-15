@@ -27,7 +27,15 @@ namespace DotNetCore.Core.Cache
 
         public virtual T Get<T>(string key)
         {
-            return (T)_memoryCache.Get(key);
+            var res = _memoryCache.Get(key);
+            if (res != null)
+            {
+                return (T)_memoryCache.Get(key);
+            }
+            else
+            {
+                return default(T);
+            }
         }
 
 

@@ -13,7 +13,7 @@ namespace DotNetCore.Framework
     {
         #region Const
 
-        private const string CustomerCookieName = "Web.Account";
+        private const string AccountCookieName = "Web.Account";
         #endregion
 
         #region Fileds
@@ -41,7 +41,7 @@ namespace DotNetCore.Framework
             if (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.Request == null)
                 return null;
 
-            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(CustomerCookieName, out cookieValue);
+            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(AccountCookieName, out cookieValue);
             return cookieValue;
         }
 
@@ -62,8 +62,8 @@ namespace DotNetCore.Framework
                     option.Expires = DateTime.Now.AddHours(cookieExpires);
                 }
 
-                _httpContextAccessor.HttpContext.Response.Cookies.Delete(CustomerCookieName);
-                _httpContextAccessor.HttpContext.Response.Cookies.Append(CustomerCookieName, accounId, option);
+                _httpContextAccessor.HttpContext.Response.Cookies.Delete(AccountCookieName);
+                _httpContextAccessor.HttpContext.Response.Cookies.Append(AccountCookieName, accounId, option);
             }
         }
         #endregion

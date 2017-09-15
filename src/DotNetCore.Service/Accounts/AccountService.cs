@@ -9,6 +9,8 @@ using System.Linq;
 using DotNetCore.Core;
 using Microsoft.AspNetCore.Http;
 using DotNetCore.Core.Cache;
+using DotNetCore.Core.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNetCore.Service.Accounts
 {
@@ -123,6 +125,8 @@ namespace DotNetCore.Service.Accounts
 
         public bool IsInRole(Account account, string roleName)
         {
+            if (account == null || string.IsNullOrEmpty(roleName))
+                throw new ArgumentNullException("account or roleName");
             return _userManager.IsInRoleAsync(account, roleName).Result;
         }
 
@@ -180,6 +184,17 @@ namespace DotNetCore.Service.Accounts
             return _userManager.Users.Any(x => x.UserName == userName);
         }
 
+        public void CreateAccountIfNotExist(Account account, string password)
+        {
+            if (!AccountIsExist(account.UserName))
+            {
+                var res = Register(account, password);
+                if (!res.Succeeded)
+                    throw new Exception($"create role error:{string.Join(";", res.ErrorDescrirtions())}");
+
+            }
+        }
+
         public IdentityResult AddToRole(Account account, string roleName)
         {
             return _userManager.AddToRoleAsync(account, roleName).Result;
@@ -197,7 +212,9 @@ namespace DotNetCore.Service.Accounts
 
         public AccountRole FindRoleByName(string name)
         {
-            return _accountRoleManager.FindByNameAsync(name).Result;
+            return _accountRoleManager.Roles.Where(x => x.Name == name)
+                    .Include("RolePermissionMaps.PermissionRecord")
+                    .FirstOrDefault();
         }
 
         public IList<string> GetRoleNamesByAccount(Account account)
@@ -206,6 +223,48 @@ namespace DotNetCore.Service.Accounts
                 throw new ArgumentNullException("account");
 
             return _userManager.GetRolesAsync(account).Result;
+        }
+
+        public void CreateRoleIfNotExist(AccountRole role)
+        {
+            if (role == null)
+                throw new ArgumentNullException("role");
+
+            if (!RoleExists(role.Name))
+            {
+                var res = CreateRole(role);
+                if (!res.Succeeded)
+                {
+                    throw new Exception($"create role error:{string.Join(";", res.ErrorDescrirtions())}");
+                }
+            }
+        }
+
+        public void InstallRoles()
+        {
+            var roles = RoleProvider.GetRoles();
+            foreach (var role in roles)
+            {
+                CreateRoleIfNotExist(role);
+            }
+        }
+
+        public void AddToRoleIfNotIn(string userName, string roleName)
+        {
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(roleName))
+                throw new ArgumentNullException("userName or roleName!");
+
+            var account = _userManager.FindByNameAsync(userName).Result;
+            if (account == null)
+                throw new Exception("account is not exist!");
+
+            var res = IsInRole(account, roleName);
+            if (!res)
+            {
+                var identityRes = AddToRole(account, roleName);
+                if (!identityRes.Succeeded)
+                    throw new Exception($"Errors:{string.Join(";", identityRes.ErrorDescrirtions())}");
+            }
         }
         #endregion
     }
