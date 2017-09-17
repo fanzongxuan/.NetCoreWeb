@@ -1,5 +1,4 @@
-﻿@using System.Security.Claims
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -38,6 +37,10 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li><a>@User.Identity.Name</a></li>
+                        if (User.IsInRole(AccountRoleNames.Administrators))
+                        {
+                            <li><a href="/admin">Admin Manage</a></li>
+                        };
                         <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
                     }
                     else

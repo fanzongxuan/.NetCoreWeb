@@ -70,8 +70,18 @@ namespace DotNetCore.Service.Accounts
                 throw new ArgumentNullException("entitiy");
 
             entitiy.CreateOnUtc = DateTime.UtcNow;
-            entitiy.LastActivityDateUtc = DateTime.UtcNow;
             var res = _userManager.CreateAsync(entitiy, pwd);
+
+            if (res.Result.Succeeded)
+            {
+                var resRole = _userManager.AddToRoleAsync(entitiy, AccountRoleNames.Register).Result;
+                if (!resRole.Succeeded)
+                {
+                    throw new Exception($"Errors:{string.Join(";", resRole.ErrorDescrirtions())}");
+                }
+
+            }
+
             return res.Result;
         }
 
@@ -109,8 +119,9 @@ namespace DotNetCore.Service.Accounts
 
         public Account GetAuthenticationAccount()
         {
-            if (_cachedAccount != null)
-                return _cachedAccount;
+            //TODO Due to dependency have some issues,so cancel account cache
+            //if (_cachedAccount != null)
+            //    return _cachedAccount;
 
             if (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.Request == null || !_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated || _httpContextAccessor.HttpContext.User == null)
                 return null;

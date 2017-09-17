@@ -56,10 +56,8 @@ namespace DotNetCore.Web
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
-            else
-            {
-                app.UseStatusCodePagesWithReExecute("/errors/{0}");
-            }
+
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseStaticFiles();
 
