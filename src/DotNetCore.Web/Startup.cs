@@ -51,19 +51,15 @@ namespace DotNetCore.Web
             if (env.IsDevelopment())
                 loggerFactory.AddDebug();
 
-            //app.UseExceptionHandler("/errors/500");
-            app.UseStatusCodePagesWithReExecute("/errors/{0}");
-            app.UseDeveloperExceptionPage();
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //    app.UseBrowserLink();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    app.UseStatusCodePagesWithReExecute("/errors/{0}");
-            //}
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();
+            }
+            else
+            {
+                app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            }
 
             app.UseStaticFiles();
 

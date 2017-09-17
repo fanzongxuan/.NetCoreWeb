@@ -6,9 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\**" />
     <Compile Remove="Views\UserInfo\**" />
+    <Content Remove="Areas\**" />
     <Content Remove="Views\UserInfo\**" />
+    <EmbeddedResource Remove="Areas\**" />
     <EmbeddedResource Remove="Views\UserInfo\**" />
+    <None Remove="Areas\**" />
     <None Remove="Views\UserInfo\**" />
   </ItemGroup>
 
@@ -32,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Data\" />
     <Folder Include="wwwroot\css\page\login\" />
     <Folder Include="wwwroot\images\page\" />
   </ItemGroup>
