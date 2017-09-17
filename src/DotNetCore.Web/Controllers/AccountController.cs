@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using DotNetCore.Core.Extensions;
 using DotNetCore.Service.Accounts;
+using DotNetCore.Framework.Mvc.Controllers;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -47,10 +48,12 @@ namespace DotNetCore.Web.Controllers
             {
                 ErrorNotification(string.Join("|", ModelState.Errors()));
             }
+
             var authModel = new AuthModel()
             {
                 RegisterModel = model
             };
+
             return RedirectToAction("Login", authModel);
         }
 

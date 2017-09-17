@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Framework.WebSiteConfig.Mvc.UI;
+using DotNetCore.Framework.Attributes;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace DotNetCore.Web.Controllers
+namespace DotNetCore.Framework.Mvc.Controllers
 {
+    [CustomerLastActivity]
     public class BaseController : Controller
     {
         /// <summary>

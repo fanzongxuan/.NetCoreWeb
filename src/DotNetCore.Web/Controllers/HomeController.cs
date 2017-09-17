@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using DotNetCore.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using DotNetCore.Framework.Mvc.Controllers;
 
 namespace DotNetCore.Web.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
 
         public IActionResult Index()

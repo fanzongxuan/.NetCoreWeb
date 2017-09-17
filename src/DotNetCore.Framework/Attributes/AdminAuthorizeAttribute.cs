@@ -1,6 +1,7 @@
 ﻿using DotNetCore.Core.Domain.Security;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Service.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,10 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DotNetCore.Framework.Controllers
+namespace DotNetCore.Framework.Controllers.Attributes
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
-    public class AdminAuthorizeAttribute : Attribute, IAuthorizationFilter
+    public class AdminAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
 
         #region Uilities

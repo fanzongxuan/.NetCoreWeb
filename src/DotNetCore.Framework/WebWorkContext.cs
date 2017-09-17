@@ -106,8 +106,6 @@ namespace DotNetCore.Framework
 
                 SetCustomerCookie(account.Id);
                 _account = account;
-                _account.LastActivityDateUtc = DateTime.UtcNow;
-                _accountService.Update(_account);
 
                 return _account;
             }

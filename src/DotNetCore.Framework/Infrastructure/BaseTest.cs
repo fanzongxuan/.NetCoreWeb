@@ -15,7 +15,7 @@ namespace DotNetCore.Framework.Infrastructure
 
             IServiceCollection services = new ServiceCollection();
             // config services
-            services.ConfigServices(config); // Create the container builder.
+            services.ConfigMyWebServices(config); // Create the container builder.
             
         }
     }

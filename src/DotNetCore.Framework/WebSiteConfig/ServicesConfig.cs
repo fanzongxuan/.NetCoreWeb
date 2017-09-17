@@ -13,7 +13,7 @@ using DotNetCore.Framework.Mvc.Config;
 
 namespace DotNetCore.Framework.WebSiteConfig
 {
-    public static class ServicesConfig
+    public static class ServicesExtensions
     {
         private static void ConfigAuthorize(IServiceCollection services)
         {
@@ -42,7 +42,7 @@ namespace DotNetCore.Framework.WebSiteConfig
             });
         }
 
-        public static IServiceProvider ConfigServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceProvider ConfigMyWebServices(this IServiceCollection services, IConfiguration configuration)
         {
             //default container config
             var conn = configuration.GetConnectionString("DotNetCoreWeb");

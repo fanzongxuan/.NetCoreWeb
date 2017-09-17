@@ -29,7 +29,7 @@ namespace DotNetCore.Web
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // config services
-            services.ConfigServices(Configuration); // Create the container builder.
+            services.ConfigMyWebServices(Configuration); // Create the container builder.
 
             // Create the IServiceProvider based on the container.
             return EngineContext.Current.ServiceProvider;
@@ -51,15 +51,19 @@ namespace DotNetCore.Web
             if (env.IsDevelopment())
                 loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            //app.UseExceptionHandler("/errors/500");
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            app.UseDeveloperExceptionPage();
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //    app.UseBrowserLink();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    app.UseStatusCodePagesWithReExecute("/errors/{0}");
+            //}
 
             app.UseStaticFiles();
 

@@ -2,6 +2,7 @@
 using DotNetCore.Core.Cache;
 using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Core.Infrastructure;
+using DotNetCore.Framework.Mvc.Controllers;
 using DotNetCore.Service.UserInfoService;
 using DotNetCore.Web.Models.UserInfos;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace DotNetCore.Web.Controllers
 {
     [Authorize]
-    public class UserInfoController : Controller
+    public class UserInfoController : BaseController
     {
         private readonly IUserinfoService _userInfoService;
         private readonly ICacheManager _cacheManager;
