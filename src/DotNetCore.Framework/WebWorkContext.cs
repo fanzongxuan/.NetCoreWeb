@@ -20,7 +20,7 @@ namespace DotNetCore.Framework
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAccountService _accountService;
-        private Account _account;
+        private Account _cacheAccount;
         #endregion
 
         #region Ctor
@@ -45,7 +45,7 @@ namespace DotNetCore.Framework
             return cookieValue;
         }
 
-        protected virtual void SetCustomerCookie(string accounId)
+        protected virtual void SetAccountCookie(string accounId)
         {
             if (_httpContextAccessor != null && _httpContextAccessor.HttpContext.Response != null)
             {
@@ -74,8 +74,9 @@ namespace DotNetCore.Framework
         {
             get
             {
-                if (_account != null)
-                    return _account;
+                //TODO some issues
+                //if (_cacheAccount != null)
+                //    return _cacheAccount;
 
                 Account account = null;
 
@@ -104,15 +105,15 @@ namespace DotNetCore.Framework
                     account = _accountService.InsertGuestAccount();
                 }
 
-                SetCustomerCookie(account.Id);
-                _account = account;
+                SetAccountCookie(account.Id);
+                _cacheAccount = account;
 
-                return _account;
+                return _cacheAccount;
             }
             set
             {
-                SetCustomerCookie(value.Id);
-                _account = value;
+                SetAccountCookie(value.Id);
+                _cacheAccount = value;
             }
         }
         #endregion

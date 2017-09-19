@@ -1,6 +1,7 @@
 ﻿// Configure bundling and minification for the project.
 // More info at https://go.microsoft.com/fwlink/?LinkId=808241
 [
+  //css
   {
     "outputFileName": "wwwroot/css/site.min.css",
     // An array of relative input file paths. Globbing patterns supported
@@ -16,6 +17,7 @@
       "wwwroot/lib/font-awesome/css/font-awesome.min.css",
       "wwwroot/lib/nprogress/nprogress.css",
       "wwwroot/lib/animate.css/animate.min.css",
+      "wwwroot/lib/bootstrap-table/dist/bootstrap-table.css"
     ]
   },
   {
@@ -26,9 +28,11 @@
       "wwwroot/lib/font-awesome/css/font-awesome.min.css",
       "wwwroot/lib/nprogress/nprogress.css",
       "wwwroot/lib/iCheck/skins/flat/green.css",
-      "wwwroot/lib/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css",
+      "wwwroot/lib/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css"
     ]
   },
+
+  //js
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
@@ -56,6 +60,8 @@
       "wwwroot/lib/DateJS/build/date.js",
       "wwwroot/lib/moment/min/moment.min.js",
       "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.js",
+      "wwwroot/lib/bootstrap-table/dist/bootstrap-table.js",
+      "wwwroot/lib/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js",
       "wwwroot/js/admin/custom.min.js"
     ],
     // Optionally specify minification options

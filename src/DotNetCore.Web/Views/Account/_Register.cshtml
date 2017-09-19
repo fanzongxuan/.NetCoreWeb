@@ -6,7 +6,7 @@
             <div asp-validation-summary="ModelOnly"></div>
             <h1>Create Account</h1>
             <div>
-                <input type="text" asp-for="Username" class="form-control" placeholder="Username" required="" />
+                <input type="text" asp-for="Username" class="form-control" placeholder="Username" required="" value="@Model.Username" />
                 <span asp-validation-for="Username"></span>
             </div>
             <div>

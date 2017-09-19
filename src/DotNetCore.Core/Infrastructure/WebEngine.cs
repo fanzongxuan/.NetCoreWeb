@@ -28,21 +28,21 @@ namespace DotNetCore.Core.Infrastructure
             AutoMapperConfiguration.Init(configurationActions);
         }
 
-        protected virtual void RegisterServices(IServiceCollection serviceCollection,IConfiguration configuration)
+        protected virtual void RegisterServices(IServiceCollection serviceCollection, IConfiguration configuration)
         {
             var builder = new ContainerBuilder();
-            
+            builder.Populate(serviceCollection);
+
             var typeFinder = new AppDomainTypeFinder();
             typeFinder.FindClassesOfType(typeof(IDependency))
                 .Select(Activator.CreateInstance)
                 .Cast<IDependency>()
-                .OrderBy(x=>x.Order).ToList()
+                .OrderBy(x => x.Order).ToList()
                 .ForEach(x => { x.Register(builder, typeFinder, configuration); });
 
-            builder.Populate(serviceCollection);
             var container = builder.Build();
-
-            this.ServiceProvider = new AutofacServiceProvider(container);
+            this.ServiceProvider = container.Resolve<IServiceProvider>();
+            //this.ServiceProvider = new AutofacServiceProvider(container);
         }
 
         protected virtual void RunStartupTasks()
@@ -57,11 +57,9 @@ namespace DotNetCore.Core.Infrastructure
 
         public IServiceProvider ServiceProvider { get; set; }
 
-        public ContainerBuilder Builder { get; set; }
-
         public void Initialize(IServiceCollection serviceCollection, IConfiguration configuration)
         {
-            RegisterServices(serviceCollection,configuration);
+            RegisterServices(serviceCollection, configuration);
             RegisterMapperConfiguration();
             RunStartupTasks();
         }

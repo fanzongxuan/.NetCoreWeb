@@ -15,7 +15,7 @@ namespace DotNetCore.Framework.Infrastructure
         public void Register(ContainerBuilder builder, AppDomainTypeFinder typeFinder, IConfiguration configuration)
         {
             //TODO Dependency have some issues
-            builder.RegisterType<WebWorkContext>().As<IWorkContext>().InstancePerDependency();
+            builder.RegisterType<WebWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
         }
     }
 }

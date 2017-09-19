@@ -21,7 +21,7 @@ namespace DotNetCore.Service.Accounts
         private const string ACCOUNT_BY_SYSTEMNAME_KEY = "Web.accountrole.systemname-{0}";
         #endregion
 
-        #region Ctor
+        #region Fileds
 
         private readonly SignInManager<Account> _signManager;
         private readonly UserManager<Account> _userManager;
@@ -31,7 +31,7 @@ namespace DotNetCore.Service.Accounts
         private Account _cachedAccount;
         #endregion
 
-        #region Methods
+        #region Ctor
 
         public AccountService(UserManager<Account> userManager,
             SignInManager<Account> signManager,
@@ -46,6 +46,11 @@ namespace DotNetCore.Service.Accounts
             _accountRoleManager = accountRoleManager;
         }
 
+
+        #endregion
+
+        #region Methods
+
         public IdentityResult Delete(Account entitiy)
         {
             if (entitiy == null)
@@ -58,9 +63,18 @@ namespace DotNetCore.Service.Accounts
             return _userManager.Users.FirstOrDefault(x => x.Id == id);
         }
 
-        public IPagedList<Account> GetListPageable(int pageIndex = 0, int pageSize = int.MaxValue)
+        public IPagedList<Account> QueryPageable(string userName, string email, string keywords, int pageIndex = 0, int pageSize = int.MaxValue)
         {
             var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(userName))
+                query = query.Where(x => x.UserName.Contains(userName));
+            if (!string.IsNullOrEmpty(email))
+                query = query.Where(x => EF.Functions.Like(email, "%"));
+            if (!string.IsNullOrEmpty(keywords))
+                query = query.Where(x => x.UserName.Contains(keywords) || x.Email.Contains(keywords) || x.PhoneNumber.Contains(keywords));
+
+            query = query.OrderBy(x => x.CreateOnUtc);
+
             return new PagedList<Account>(query, pageIndex, pageSize);
         }
 
@@ -139,6 +153,17 @@ namespace DotNetCore.Service.Accounts
             if (account == null || string.IsNullOrEmpty(roleName))
                 throw new ArgumentNullException("account or roleName");
             return _userManager.IsInRoleAsync(account, roleName).Result;
+        }
+
+        public bool IsInAnyRole(Account account, List<string> roleNames)
+        {
+            var roles = _userManager.GetRolesAsync(account).Result;
+            foreach (var role in roleNames)
+            {
+                if (roles.Any(x => x == role))
+                    return true;
+            }
+            return false;
         }
 
         public virtual AccountRole GetAccountRoleBySystemName(string systemName)

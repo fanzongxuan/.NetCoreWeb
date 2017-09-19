@@ -39,7 +39,7 @@
                         <li><a>@User.Identity.Name</a></li>
                         if (User.IsInRole(AccountRoleNames.Administrators))
                         {
-                            <li><a href="/admin">Admin Manage</a></li>
+                            <li><a href="/admin">Administration</a></li>
                         };
                         <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
                     }

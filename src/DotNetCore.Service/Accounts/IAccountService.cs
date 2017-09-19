@@ -9,6 +9,8 @@ namespace DotNetCore.Service.Accounts
 {
     public interface IAccountService
     {
+        #region Account
+
         IdentityResult Register(Account entitiy, string password);
 
         Account GetById(string id);
@@ -17,7 +19,7 @@ namespace DotNetCore.Service.Accounts
 
         IdentityResult Delete(Account entitiy);
 
-        IPagedList<Account> GetListPageable(int pageIndex = 0, int pageSize = int.MaxValue);
+        IPagedList<Account> QueryPageable(string userName, string email, string keywords, int pageIndex = 0, int pageSize = int.MaxValue);
 
         void LoginOut();
 
@@ -41,6 +43,11 @@ namespace DotNetCore.Service.Accounts
 
         IdentityResult AddToRole(Account account, string roleName);
 
+        bool IsInAnyRole(Account account, List<string> roleNames);
+        #endregion
+
+        #region Role
+
         void AddToRoleIfNotIn(string userName, string roleName);
 
         bool RoleExists(string roleName);
@@ -54,5 +61,6 @@ namespace DotNetCore.Service.Accounts
         IList<string> GetRoleNamesByAccount(Account account);
 
         void InstallRoles();
+        #endregion
     }
 }

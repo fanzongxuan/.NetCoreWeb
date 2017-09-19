@@ -29,7 +29,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
         #endregion
 
         #region Methods
-
+        
         public IActionResult AccessDenied(string pageUrl)
         {
             var currentAccount = _workContext.CurrentAccount;

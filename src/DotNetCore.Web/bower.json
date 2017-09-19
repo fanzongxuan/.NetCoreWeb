@@ -15,6 +15,7 @@
     "skycons": "*",
     "DateJS": "v1.0.0-rc3",
     "chart.js": "chartjs#v2.5.0",
-    "font-awesome": "font-awsome#v4.7.0"
+    "font-awesome": "font-awsome#v4.7.0",
+    "bootstrap-table": "1.11.1"
   }
 }
