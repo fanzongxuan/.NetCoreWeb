@@ -15,7 +15,7 @@ namespace DotNetCore.Data.Tests
         public void ExecuteSqlCommandTest()
         {
             var _dbContext= EngineContext.Current.GetService<IDbContext>();
-            string sql = "update userinfo set isdeleted=0";
+            string sql = "update account set isdeleted=0";
             var res = _dbContext.ExecuteSqlCommand(sql);
             Assert.IsTrue(true);
         }
@@ -24,8 +24,8 @@ namespace DotNetCore.Data.Tests
         public void SqlQueryTest()
         {
             var _dbContext = EngineContext.Current.GetService<IDbContext>();
-            var sql = "select *from userinfo";
-            var res= _dbContext.SqlQuery<UserInfo>(sql);
+            var sql = "select *from account";
+            var res= _dbContext.SqlQuery<Account>(sql);
             Assert.IsTrue(true);
         }
     }

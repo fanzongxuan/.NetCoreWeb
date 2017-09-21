@@ -11,6 +11,8 @@ using DotNetCore.Service.Accounts;
 using DotNetCore.Service.Security;
 using DotNetCore.Core.Infrastructure;
 using DotNetCore.Core.Extensions;
+using DotNetCore.Core.Domain.Messages;
+using DotNetCore.Service.Messages;
 
 namespace DotNetCore.Service.Installation
 {
@@ -22,6 +24,7 @@ namespace DotNetCore.Service.Installation
         private readonly ISettingService _settingService;
         private readonly IAccountService _accountService;
         private readonly IPermissionService _permissionService;
+        private readonly IEmailAccountService _emailAccountService;
         #endregion
 
         #region Ctor
@@ -29,12 +32,14 @@ namespace DotNetCore.Service.Installation
         public CodeFirstInstallationService(IRepository<ScheduleTask> scheduleTaskRepository,
             ISettingService settingService,
             IAccountService accountService,
-            IPermissionService permissionService)
+            IPermissionService permissionService,
+            IEmailAccountService emailAccountService)
         {
             _scheduleTaskRepository = scheduleTaskRepository;
             _settingService = settingService;
             _accountService = accountService;
             _permissionService = permissionService;
+            _emailAccountService = emailAccountService;
         }
         #endregion
 
@@ -51,12 +56,36 @@ namespace DotNetCore.Service.Installation
                 Enabled = true,
                 StopOnError = false,
             };
-            if (!_scheduleTaskRepository.Table.Where(x => x.Type == keepAliveTask.Type).Any())
+            var keepAlive = _scheduleTaskRepository.Table.FirstOrDefault(x => x.Type == keepAliveTask.Type);
+            if (keepAlive == null)
             {
-                tasks.Add(keepAliveTask);
+                _scheduleTaskRepository.Insert(keepAliveTask);
             }
 
-            _scheduleTaskRepository.Insert(tasks);
+            //schedule task
+            var queuedEmailSendTask = new ScheduleTask
+            {
+                Name = "Email sender",
+                Seconds = 5,
+                Type = "DotNetCore.Service.Messages.QueuedEmailSendTask,DotNetCore.Service",
+                Enabled = true,
+                StopOnError = false,
+            };
+            var queuedEmailTask = _scheduleTaskRepository.Table.FirstOrDefault(x => x.Type == queuedEmailSendTask.Type);
+            if (queuedEmailTask == null)
+            {
+                _scheduleTaskRepository.Insert(queuedEmailSendTask);
+            }
+            //else
+            //{
+            //    keepAlive.Name = keepAliveTask.Name;
+            //    keepAlive.Seconds = keepAliveTask.Seconds;
+            //    keepAlive.Type = keepAliveTask.Type;
+            //    keepAlive.Enabled = keepAliveTask.Enabled;
+            //    keepAlive.StopOnError = keepAliveTask.StopOnError;
+            //    _scheduleTaskRepository.Update(keepAlive);
+            //}
+
         }
 
         protected virtual void InstallSettings()

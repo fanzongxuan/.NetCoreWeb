@@ -10,6 +10,7 @@ using DotNetCore.Service.Settings;
 using Microsoft.Extensions.Configuration;
 using Autofac;
 using DotNetCore.Service.Security;
+using DotNetCore.Service.Messages;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -77,8 +78,9 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                 });
 
             builder.RegisterType<SettingService>().As<ISettingService>().InstancePerLifetimeScope();
-            builder.RegisterType<StandardPermissionProvider>().As<IPermissionProvider>().SingleInstance();
+            builder.RegisterType<StandardPermissionProvider>().As<IPermissionProvider>().SingleInstance(); 
             builder.RegisterType<PermissionService>().As<IPermissionService>().InstancePerLifetimeScope();
+            builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
 
         }
     }
