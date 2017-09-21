@@ -18,6 +18,7 @@ namespace DotNetCore.Service.Accounts
     {
         #region Const
 
+        private const string ACCOUNT_BY_ID_KEY = "Web.userinfo.id-{0}";
         private const string ACCOUNT_BY_SYSTEMNAME_KEY = "Web.accountrole.systemname-{0}";
         #endregion
 
@@ -60,7 +61,11 @@ namespace DotNetCore.Service.Accounts
 
         public Account GetById(string id)
         {
-            return _userManager.Users.FirstOrDefault(x => x.Id == id);
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            string key = string.Format(ACCOUNT_BY_ID_KEY, id);
+            return _cacheManager.Get(key, () => _userManager.Users.FirstOrDefault(x => x.Id == id));
         }
 
         public IPagedList<Account> QueryPageable(string userName, string email, string keywords, int pageIndex = 0, int pageSize = int.MaxValue)

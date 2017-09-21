@@ -101,7 +101,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
             if (_accountService.IsInAnyRole(account, rolesCantBeDelete))
             {
                 res.Code = ReturnCode.Error;
-                res.Message = string.Join(';', "account contain role which can't be deleted");
+                res.Message = string.Join(';', "account contain the role which can't be deleted");
             }
             else
             {

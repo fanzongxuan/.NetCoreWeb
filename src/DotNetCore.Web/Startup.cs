@@ -21,15 +21,13 @@ namespace DotNetCore.Web
             Configuration = configuration;
         }
 
-        public IContainer ApplicationContainer { get; private set; }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // config services
-            services.ConfigMyWebServices(Configuration); // Create the container builder.
+            services.ConfigMyWebServices(Configuration);
 
             // Create the IServiceProvider based on the container.
             return EngineContext.Current.ServiceProvider;

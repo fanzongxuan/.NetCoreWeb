@@ -29,8 +29,6 @@ namespace DotNetCore.Service.Installation
         public CodeFirstInstallationService(IRepository<ScheduleTask> scheduleTaskRepository,
             ISettingService settingService,
             IAccountService accountService,
-            RoleManager<AccountRole> roleManager,
-            UserManager<Account> userManager,
             IPermissionService permissionService)
         {
             _scheduleTaskRepository = scheduleTaskRepository;
@@ -65,7 +63,7 @@ namespace DotNetCore.Service.Installation
         {
             _settingService.SaveSetting(new AuthorizeSettings
             {
-                RequireUniqueEmail = true,
+                RequireUniqueEmail = false,
                 RequirePasswordLength = 8,
                 RequiredPasswordUniqueChars = 5,
                 RequirePasswordNonAlphanumeric = false,

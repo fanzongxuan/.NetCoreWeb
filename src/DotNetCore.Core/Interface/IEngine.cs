@@ -18,5 +18,7 @@ namespace DotNetCore.Core.Interface
         object GetService(Type type);
 
         IEnumerable<T> GetServices<T>();
+
+        ContainerBuilder ContainerBuilder { get; set; }
     }
 }

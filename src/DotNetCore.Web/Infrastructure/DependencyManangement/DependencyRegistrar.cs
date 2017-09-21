@@ -18,7 +18,7 @@ namespace DotNetCore.Web.Infrastructure.DependencyManangement
 
         public void Register(ContainerBuilder builder, AppDomainTypeFinder typeFinder, IConfiguration configuration)
         {
-            builder.RegisterType<UserInfoController>().WithParameter(ResolvedParameter.ForNamed<ICacheManager>("cache_static"));
+           
         }
     }
 }

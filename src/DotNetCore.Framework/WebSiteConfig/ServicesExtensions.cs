@@ -10,6 +10,8 @@ using DotNetCore.Service.ScheduleTasks;
 using System;
 using DotNetCore.Core.ElasticSearch;
 using DotNetCore.Framework.Mvc.Config;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DotNetCore.Framework.WebSiteConfig
 {
@@ -19,31 +21,33 @@ namespace DotNetCore.Framework.WebSiteConfig
         {
             var _settingService = EngineContext.Current.GetService<ISettingService>();
             var authorizeSettings = _settingService.LoadSetting<AuthorizeSettings>();
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings
-                options.Password.RequireDigit = authorizeSettings.RequirePasswordDigit;
-                options.Password.RequiredLength = authorizeSettings.RequirePasswordLength;
-                options.Password.RequireNonAlphanumeric = authorizeSettings.RequirePasswordNonAlphanumeric;
-                options.Password.RequireUppercase = authorizeSettings.RequirePasswordUppercase;
-                options.Password.RequireLowercase = authorizeSettings.RequirePasswordLowercase;
-                options.Password.RequiredUniqueChars = authorizeSettings.RequiredPasswordUniqueChars;
+            var identityOpt = EngineContext.Current.GetService<IOptions<IdentityOptions>>();
 
-                // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = authorizeSettings.DefaultLockoutTimeSpan;
-                options.Lockout.MaxFailedAccessAttempts = authorizeSettings.MaxFailedAccessAttempts;
+            // Password settings
+            identityOpt.Value.Password.RequireDigit = authorizeSettings.RequirePasswordDigit;
+            identityOpt.Value.Password.RequiredLength = authorizeSettings.RequirePasswordLength;
+            identityOpt.Value.Password.RequireNonAlphanumeric = authorizeSettings.RequirePasswordNonAlphanumeric;
+            identityOpt.Value.Password.RequireUppercase = authorizeSettings.RequirePasswordUppercase;
+            identityOpt.Value.Password.RequireLowercase = authorizeSettings.RequirePasswordLowercase;
+            identityOpt.Value.Password.RequiredUniqueChars = authorizeSettings.RequiredPasswordUniqueChars;
 
-                // User settings
-                options.User.RequireUniqueEmail = authorizeSettings.RequireUniqueEmail;
+            // Lockout settings
+            identityOpt.Value.Lockout.DefaultLockoutTimeSpan = authorizeSettings.DefaultLockoutTimeSpan;
+            identityOpt.Value.Lockout.MaxFailedAccessAttempts = authorizeSettings.MaxFailedAccessAttempts;
 
-                //sign in
-                options.SignIn.RequireConfirmedEmail = authorizeSettings.RequireConfirmedEmail;
-                options.SignIn.RequireConfirmedPhoneNumber = authorizeSettings.RequireConfirmedPhoneNumber;
-            });
+            // User settings
+            identityOpt.Value.User.RequireUniqueEmail = authorizeSettings.RequireUniqueEmail;
+
+            //sign in
+            identityOpt.Value.SignIn.RequireConfirmedEmail = authorizeSettings.RequireConfirmedEmail;
+            identityOpt.Value.SignIn.RequireConfirmedPhoneNumber = authorizeSettings.RequireConfirmedPhoneNumber;
         }
 
         public static IServiceProvider ConfigMyWebServices(this IServiceCollection services, IConfiguration configuration)
         {
+            //Due to identity config,add setting service to default service collection
+            services.AddScoped<ISettingService, SettingService>();
+
             //default container config
             var conn = configuration.GetConnectionString("DotNetCoreWeb");
             services.AddDbContextPool<WebDbContext>(options => options.UseSqlServer(conn, t => t.UseRowNumberForPaging()));
@@ -61,7 +65,7 @@ namespace DotNetCore.Framework.WebSiteConfig
 
             //cache
             var redisEnable = configuration.GetValue<bool>("Redis:Enable");
-            if(redisEnable)
+            if (redisEnable)
             {
 
                 services.AddDistributedRedisCache(options =>
@@ -75,19 +79,20 @@ namespace DotNetCore.Framework.WebSiteConfig
                 services.AddMemoryCache();
             }
 
-            //web site services and some configs
+            //web site services and some configs,
+            //Due to use autofac,so can't use defalut service collection any more
             EngineContext.Initialize(services, configuration, false);
 
             //config  authorize
             ConfigAuthorize(services);
-            
+
             //start schedule task
             if (!string.IsNullOrWhiteSpace(conn))
             {
                 TaskManager.Instance.Initialize();
                 TaskManager.Instance.Start();
             }
-            
+
             return EngineContext.Current.ServiceProvider;
         }
     }

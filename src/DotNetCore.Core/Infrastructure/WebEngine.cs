@@ -31,6 +31,7 @@ namespace DotNetCore.Core.Infrastructure
         protected virtual void RegisterServices(IServiceCollection serviceCollection, IConfiguration configuration)
         {
             var builder = new ContainerBuilder();
+            ContainerBuilder = builder;
             builder.Populate(serviceCollection);
 
             var typeFinder = new AppDomainTypeFinder();
@@ -78,6 +79,13 @@ namespace DotNetCore.Core.Infrastructure
         public IEnumerable<T> GetServices<T>()
         {
             return ServiceProvider.GetServices<T>();
+        }
+
+        public ContainerBuilder ContainerBuilder { get; set; }
+
+        public void Populate(IServiceCollection serviceCollection)
+        {
+            ContainerBuilder.Populate(serviceCollection);
         }
 
     }

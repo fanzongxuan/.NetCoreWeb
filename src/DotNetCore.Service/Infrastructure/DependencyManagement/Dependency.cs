@@ -1,12 +1,9 @@
 ﻿using DotNetCore.Core.Interface;
 using System;
-using Microsoft.Extensions.DependencyInjection;
 using DotNetCore.Service.Events;
-using DotNetCore.Service.UserInfoService;
 using DotNetCore.Core.Infrastructure;
 using System.Linq;
 using DotNetCore.Service.Installation;
-using DotNetCore.Service.Common;
 using DotNetCore.Service.ScheduleTasks;
 using DotNetCore.Service.Accounts;
 using DotNetCore.Service.Settings;

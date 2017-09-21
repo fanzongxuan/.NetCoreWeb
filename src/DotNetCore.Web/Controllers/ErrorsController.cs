@@ -13,6 +13,7 @@ namespace DotNetCore.Web.Controllers
         [Route("errors/{statusCode}")]
         public IActionResult Error(int statusCode)
         {
+            ViewBag.ErrorCode = statusCode;
             switch (statusCode)
             {
                 case (int)HttpStatusCode.Unauthorized:
