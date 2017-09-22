@@ -7,6 +7,7 @@ using DotNetCore.Data.Interface;
 using DotNetCore.Service.Events;
 using System.Linq;
 using DotNetCore.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNetCore.Service.Messages
 {
@@ -122,7 +123,7 @@ namespace DotNetCore.Service.Messages
                 var nowUtc = DateTime.UtcNow;
                 query = query.Where(qe => !qe.DontSendBeforeDateUtc.HasValue || qe.DontSendBeforeDateUtc.Value <= nowUtc);
             }
-            query = query.Where(qe => qe.SentTries < maxSendTries);
+            query = query.Where(qe => qe.SentTries < maxSendTries).Include(x=>x.EmailAccount);
             query = loadNewest ?
                 //load the newest records
                 query.OrderByDescending(qe => qe.CreatedOnUtc) :

@@ -11,6 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Autofac;
 using DotNetCore.Service.Security;
 using DotNetCore.Service.Messages;
+using Autofac.Core;
+using System.Reflection;
+using Autofac.Builder;
+using System.Collections.Generic;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -77,11 +81,46 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                     builder.RegisterType(x).SingleInstance();
                 });
 
+            //Register settings
+            builder.RegisterSource(new SettingsSource());
+
             builder.RegisterType<SettingService>().As<ISettingService>().InstancePerLifetimeScope();
-            builder.RegisterType<StandardPermissionProvider>().As<IPermissionProvider>().SingleInstance(); 
+            builder.RegisterType<StandardPermissionProvider>().As<IPermissionProvider>().SingleInstance();
             builder.RegisterType<PermissionService>().As<IPermissionService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
 
         }
+    }
+
+    public class SettingsSource : IRegistrationSource
+    {
+        static readonly MethodInfo BuildMethod = typeof(SettingsSource).GetMethod(
+            "BuildRegistration",
+            BindingFlags.Static | BindingFlags.NonPublic);
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(
+                Autofac.Core.Service service,
+                Func<Autofac.Core.Service, IEnumerable<IComponentRegistration>> registrations)
+        {
+            var ts = service as TypedService;
+            if (ts != null && typeof(ISetting).IsAssignableFrom(ts.ServiceType))
+            {
+                var buildMethod = BuildMethod.MakeGenericMethod(ts.ServiceType);
+                yield return (IComponentRegistration)buildMethod.Invoke(null, null);
+            }
+        }
+
+        static IComponentRegistration BuildRegistration<TSettings>() where TSettings : ISetting, new()
+        {
+            return RegistrationBuilder
+                .ForDelegate((c, p) =>
+                {
+                    return c.Resolve<ISettingService>().LoadSetting<TSettings>();
+                })
+                .InstancePerLifetimeScope()
+                .CreateRegistration();
+        }
+
+        public bool IsAdapterForIndividualComponents { get { return false; } }
     }
 }

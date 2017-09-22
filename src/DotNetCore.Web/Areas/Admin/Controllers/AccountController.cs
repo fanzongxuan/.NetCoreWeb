@@ -39,15 +39,19 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
         #region List
         public IActionResult List()
         {
-            if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccount))
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccounts))
                 return AccessDeniedView();
 
             return View();
         }
 
         [HttpPost]
+        [AjaxRequest]
         public IActionResult GetListJson([FromBody] AccountQuery query)
         {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccounts))
+                return AccessDeniedView();
+
             var accounts = _accountService.QueryPageable(query.UserName, query.Email, query.Keywords, query.Page - 1, query.PageSize);
 
             var gridModel = new DataSourceResult
@@ -80,7 +84,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
             var res = new AjaxResult();
 
             //access
-            if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccount))
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccounts))
             {
                 res = DefalutAjaxResultProvider.AccessDenied;
                 return Json(res);

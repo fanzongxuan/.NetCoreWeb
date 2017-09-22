@@ -54,7 +54,9 @@ namespace DotNetCore.Service.Messages
 
         public IPagedList<EmailAccount> GetListPageable(int pageIndex = 0, int pageSize = int.MaxValue)
         {
-            throw new NotImplementedException();
+            var query = _emailAccountRepository.Table;
+
+            return new PagedList<EmailAccount>(query, pageIndex, pageSize);
         }
 
         public void Insert(EmailAccount entitiy)

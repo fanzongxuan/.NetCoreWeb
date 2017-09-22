@@ -1,0 +1,90 @@
+﻿@model DotNetCore.Web.Areas.Admin.Models.EmailAccounts.EmailAccountModel
+@{
+    ViewData["Title"] = "Update";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Edit email account</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form asp-controller="EmailAccount" asp-area="admin" asp-action="update" method="post" class="form-horizontal form-label-left">
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.DisplayName, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.DisplayName, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.DisplayName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Email, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.Email, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Host, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.Host, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.Host, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Port, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.Port, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.Port, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Username, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.Username, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.Username, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Password, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.Password, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.EnableSsl, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.CheckBoxFor(x => x.EnableSsl, new { @class = "icheckbox_flat-green checked" })
+                            @Html.ValidationMessageFor(x => x.EnableSsl, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.UseDefaultCredentials, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.CheckBoxFor(x => x.UseDefaultCredentials, new { @class = "icheckbox_flat-green checked" })
+                            @Html.ValidationMessageFor(x => x.UseDefaultCredentials, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.IsDefaultEmailAccount, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.CheckBoxFor(x => x.IsDefaultEmailAccount, new { @class = "icheckbox_flat-green checked" })
+                            @Html.ValidationMessageFor(x => x.IsDefaultEmailAccount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.SendTestEmailTo, new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(x => x.SendTestEmailTo, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12" } })
+                            @Html.ValidationMessageFor(x => x.SendTestEmailTo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

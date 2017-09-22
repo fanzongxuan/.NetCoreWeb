@@ -25,6 +25,8 @@ namespace DotNetCore.Service.Installation
         private readonly IAccountService _accountService;
         private readonly IPermissionService _permissionService;
         private readonly IEmailAccountService _emailAccountService;
+        private readonly IRepository<EmailAccount> _emailAccountRepository;
+
         #endregion
 
         #region Ctor
@@ -33,17 +35,40 @@ namespace DotNetCore.Service.Installation
             ISettingService settingService,
             IAccountService accountService,
             IPermissionService permissionService,
-            IEmailAccountService emailAccountService)
+            IEmailAccountService emailAccountService,
+            IRepository<EmailAccount> emailAccountRepository)
         {
             _scheduleTaskRepository = scheduleTaskRepository;
             _settingService = settingService;
             _accountService = accountService;
             _permissionService = permissionService;
             _emailAccountService = emailAccountService;
+            _emailAccountRepository = emailAccountRepository;
         }
         #endregion
 
         #region Uilities
+        protected virtual void InstallEmialAccount()
+        {
+            var defaultEmailAccount = new EmailAccount
+            {
+                Email = "13814063516@163.com",
+                DisplayName = "Store name",
+                Host = "smtp.163.com",
+                Port = 25,
+                Username = "123",
+                Password = "123",
+                EnableSsl = false,
+                UseDefaultCredentials = false
+            };
+
+            var isExist = _emailAccountRepository.Table.Any(x => x.Email == defaultEmailAccount.Email);
+            if (!isExist)
+            {
+                _emailAccountRepository.Insert(defaultEmailAccount);
+            }
+
+        }
 
         protected virtual void InstallScheduleTasks()
         {
@@ -104,6 +129,14 @@ namespace DotNetCore.Service.Installation
                 RequireConfirmedEmail = false,
                 RequireConfirmedPhoneNumber = false
             });
+
+            var eaGeneral = _emailAccountRepository.Table.FirstOrDefault();
+            if (eaGeneral == null)
+                throw new Exception("Default email account cannot be loaded");
+            _settingService.SaveSetting(new EmailAccountSettings
+            {
+                DefaultEmailAccountId = eaGeneral.Id
+            });
         }
 
         protected virtual void InstallRoles()
@@ -148,6 +181,7 @@ namespace DotNetCore.Service.Installation
 
         public void InstallData()
         {
+            InstallEmialAccount();
             InstallScheduleTasks();
             InstallSettings();
             InstallRoles();

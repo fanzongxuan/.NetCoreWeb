@@ -10,7 +10,8 @@ namespace DotNetCore.Service.Security
     {
         #region Fileds
         public static readonly PermissionRecord AccessAdminPanel = new PermissionRecord { Name = "Access admin area", SystemName = "AccessAdminPanel", Category = "Standard" };
-        public static readonly PermissionRecord MangageAccount = new PermissionRecord { Name = "Access mangage account", SystemName = "MangageAccount", Category = "Standard" };
+        public static readonly PermissionRecord MangageAccounts = new PermissionRecord { Name = "Access mangage account", SystemName = "MangageAccounts", Category = "Standard" };
+        public static readonly PermissionRecord MangageEmailAccounts = new PermissionRecord { Name = "Access mangage email account", SystemName = "MangageEmailAccounts", Category = "Standard" };
         #endregion
 
         #region Methods
@@ -25,7 +26,8 @@ namespace DotNetCore.Service.Security
                     PermissionRecords=new[]
                     {
                         AccessAdminPanel,
-                        MangageAccount
+                        MangageAccounts,
+                        MangageEmailAccounts
                     }
                 }
             };
@@ -36,9 +38,10 @@ namespace DotNetCore.Service.Security
             return new[]
             {
                 AccessAdminPanel,
-                MangageAccount
+                MangageAccounts,
+                MangageEmailAccounts
             };
-        } 
+        }
         #endregion
     }
 }

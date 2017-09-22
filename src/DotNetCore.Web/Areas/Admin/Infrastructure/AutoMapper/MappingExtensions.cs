@@ -1,11 +1,15 @@
 ﻿using DotNetCore.Core.Domain.Accounts;
+using DotNetCore.Core.Domain.Messages;
 using DotNetCore.Core.Infrastructure;
+using DotNetCore.Web.Areas.Admin.Models.EmailAccounts;
 using DotNetCore.Web.Areas.Admin.Models.Setting;
 
 namespace DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper
 {
     public static class MappingExtensions
     {
+        #region Base
+
         public static TDestination MapTo<TSource, TDestination>(this TSource source)
         {
             return AutoMapperConfiguration.Mapper.Map<TSource, TDestination>(source);
@@ -14,7 +18,8 @@ namespace DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper
         public static TDestination MapTo<TSource, TDestination>(this TSource source, TDestination destination)
         {
             return AutoMapperConfiguration.Mapper.Map(source, destination);
-        }
+        } 
+        #endregion
 
         #region Settings
 
@@ -26,6 +31,25 @@ namespace DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper
         public static AuthorizeSettings ToEntity(this AuthorizeSettingsModel model)
         {
             return model.MapTo<AuthorizeSettingsModel, AuthorizeSettings>();
+        }
+
+        #endregion
+
+        #region Email accounts
+
+        public static EmailAccountModel ToModel(this EmailAccount entity)
+        {
+            return entity.MapTo<EmailAccount, EmailAccountModel>();
+        }
+
+        public static EmailAccount ToEntity(this EmailAccountModel model)
+        {
+            return model.MapTo<EmailAccountModel, EmailAccount>();
+        }
+
+        public static EmailAccount ToEntity(this EmailAccountModel model, EmailAccount destination)
+        {
+            return model.MapTo(destination);
         }
 
         #endregion
