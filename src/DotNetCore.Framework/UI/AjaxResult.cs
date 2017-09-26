@@ -8,9 +8,9 @@ namespace DotNetCore.Framework.UI
 {
     public class AjaxResult
     {
-        public ReturnCode Code { get; set; }
+        public ReturnCode Code { get; set; } = ReturnCode.Sucess;
 
-        public string Message { get; set; }
+        public string Message { get; set; } = "Success";
     }
 
     public enum ReturnCode

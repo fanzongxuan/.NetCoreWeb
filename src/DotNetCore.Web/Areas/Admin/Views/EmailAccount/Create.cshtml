@@ -1,0 +1,25 @@
+﻿@model DotNetCore.Web.Areas.Admin.Models.EmailAccounts.EmailAccountModel
+@{
+    ViewData["Title"] = "Update";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Create email account</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <form action="/admin/emailaccount/create" method="post" class="form-horizontal form-label-left">
+                <div class="x_content">
+                    @Html.AntiForgeryToken()
+                    @Html.Partial("_CreateOrUpdate", Model)
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/js/site.validation.min.js"></script>
+}

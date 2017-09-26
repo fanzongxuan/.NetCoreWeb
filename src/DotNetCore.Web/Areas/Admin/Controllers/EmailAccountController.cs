@@ -11,6 +11,10 @@ using DotNetCore.Framework.UI;
 using DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper;
 using DotNetCore.Core.Domain.Messages;
 using System.Net;
+using DotNetCore.Web.Areas.Admin.Models.EmailAccounts;
+using DotNetCore.Core.Extensions;
+using DotNetCore.Core;
+using DotNetCore.Framework.Mvc.ActionFilter;
 
 namespace DotNetCore.Web.Areas.Admin.Controllers
 {
@@ -44,6 +48,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
 
         #endregion
 
+        #region List
         public IActionResult List()
         {
             if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
@@ -75,6 +80,9 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
 
             return Json(gridModel);
         }
+        #endregion
+
+        #region Update
 
         public IActionResult Update(int id)
         {
@@ -89,5 +97,157 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
 
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [FormValueRequired("save")]
+        public IActionResult Update([FromForm]EmailAccountModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
+                return AccessDeniedView();
+
+            var entity = _emailAccountService.GetById(model.Id);
+            if (entity == null)
+                return new StatusCodeResult((int)HttpStatusCode.NotFound);
+
+            if (ModelState.IsValid)
+            {
+                entity = model.ToEntity(entity);
+                _emailAccountService.Update(entity);
+
+                SuccessNotification("Email Account has been updated!");
+                return Redirect("/admin/EmailAccount/list");
+            }
+            else
+            {
+                ErrorNotification(string.Join(";", ModelState.Errors()));
+                return View(model);
+            }
+
+        }
+        #endregion
+
+        #region Create
+
+        public IActionResult Create(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
+                return AccessDeniedView();
+
+            var model = new EmailAccountModel()
+            {
+                Port = 25
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([FromForm]EmailAccountModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
+                return AccessDeniedView();
+
+            if (ModelState.IsValid)
+            {
+                var entity = model.ToEntity();
+                _emailAccountService.Insert(entity);
+
+                SuccessNotification("Email Account has been create!");
+                return Redirect("/admin/EmailAccount/list");
+            }
+            else
+            {
+                ErrorNotification(string.Join(";", ModelState.Errors()));
+                return View(model);
+            }
+
+        }
+        #endregion
+
+        #region MarkAsDefaultEmail
+
+        public IActionResult MarkAsDefaultEmail(int id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
+                return AccessDeniedView();
+
+            var defaultEmailAccount = _emailAccountService.GetById(id);
+            if (defaultEmailAccount == null)
+                return new StatusCodeResult((int)HttpStatusCode.NotFound);
+
+            _emailAccountSettings.DefaultEmailAccountId = defaultEmailAccount.Id;
+            _settingService.SaveSetting(_emailAccountSettings);
+            return List();
+        }
+        #endregion
+
+        #region Delete
+
+        [HttpPost]
+        [AjaxRequest]
+        public IActionResult Delete(int id)
+        {
+            var res = new AjaxResult();
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
+            {
+                res.Code = ReturnCode.Error;
+                res.Message = "Access denied";
+            }
+
+            var emailAccount = _emailAccountService.GetById(id);
+            if (emailAccount == null)
+            {
+                res.Code = ReturnCode.Error;
+                res.Message = "Not Found!";
+            }
+
+            _emailAccountService.Delete(emailAccount);
+
+            return Json(res);
+        }
+
+        #endregion
+
+        #region SendTestEmail
+
+        [HttpPost, ActionName("Update")]
+        [FormValueRequired("sendtestemail")]
+        public virtual ActionResult SendTestEmail(EmailAccountModel model)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
+                return AccessDeniedView();
+
+            var emailAccount = _emailAccountService.GetById(model.Id);
+            if (emailAccount == null)
+                //No email account found with the specified id
+                return RedirectToAction("List");
+
+            if (!CommonHelper.IsValidEmail(model.SendTestEmailTo))
+            {
+                ErrorNotification("Wrong Email!", false);
+                return View(model);
+            }
+
+            try
+            {
+                if (String.IsNullOrWhiteSpace(model.SendTestEmailTo))
+                    throw new Exception("Enter test email address");
+
+                string subject = "Testing email functionality.";
+                string body = "Email works fine.";
+                _emailSender.SendEmail(emailAccount, subject, body, emailAccount.Email, emailAccount.DisplayName, model.SendTestEmailTo, null);
+                SuccessNotification("Send test email success!", false);
+            }
+            catch (Exception exc)
+            {
+                ErrorNotification(exc.Message, false);
+            }
+
+            return View(model);
+        }
+
+        #endregion
     }
 }

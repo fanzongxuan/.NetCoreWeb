@@ -9,24 +9,27 @@ namespace DotNetCore.Web.Areas.Admin.Models.EmailAccounts
 {
     public class EmailAccountModel : BaseEntityModel
     {
-        [Display(Name ="Email")]
+        [Display(Name = "Email"), Required]
         public string Email { get; set; }
 
-        [Display(Name = "Display Name")]
+        [Display(Name = "Display Name"), Required]
         public string DisplayName { get; set; }
 
-        [Display(Name = "Host")]
+        [Display(Name = "Host"), Required]
         public string Host { get; set; }
 
-        [Display(Name = "Port")]
+        [Display(Name = "Port"), Required]
         public int Port { get; set; }
 
-        [Display(Name = "Username")]
+        [Display(Name = "Username"), Required]
         public string Username { get; set; }
 
-        [Display(Name = "Password")]
+        [Display(Name = "Password"), Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [DataType(DataType.Password), Compare(nameof(Password))]
+        public string ConfirmPassword { get; set; }
 
         [Display(Name = "Enable Ssl")]
         public bool EnableSsl { get; set; }

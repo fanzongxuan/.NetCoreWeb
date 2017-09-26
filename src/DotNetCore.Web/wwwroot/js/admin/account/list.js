@@ -94,16 +94,6 @@ var TableInit = function () {
 }
 
 window.operateEvents = {
-    //'click .save': function (e, value, row, index) {
-    //    $.ajax({
-    //        type: "post",
-    //        data: row,
-    //        url: 'Webservice.asmx/ModifyResourceList',
-    //        success: function (data) {
-    //            alert('修改成功');
-    //        }
-    //    });
-    //},
     'click .remove': function (e, value, row, index) {
         if (confirm("is delete?")) {
             $.ajax({
