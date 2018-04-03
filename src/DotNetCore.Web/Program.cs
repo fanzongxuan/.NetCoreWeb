@@ -21,6 +21,7 @@ namespace DotNetCore.Web
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseIISIntegration()
                 //you can config your log privoder and filter rules by code or appsetting.json file,visit https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/logging?tabs=aspnetcore2x;
                 //.ConfigureLogging(x => x.AddConsole())
                 .Build();

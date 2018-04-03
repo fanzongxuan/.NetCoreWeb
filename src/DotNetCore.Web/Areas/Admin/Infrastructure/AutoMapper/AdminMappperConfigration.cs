@@ -5,6 +5,7 @@ using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Web.Areas.Admin.Models.Setting;
 using DotNetCore.Core.Domain.Messages;
 using DotNetCore.Web.Areas.Admin.Models.EmailAccounts;
+using DotNetCore.Web.Areas.Admin.Models.Accounts;
 
 namespace DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper
 {
@@ -23,6 +24,11 @@ namespace DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper
                 //Email account
                 x.CreateMap<EmailAccount, EmailAccountModel>();
                 x.CreateMap<EmailAccountModel, EmailAccount>();
+
+
+                //Account
+                x.CreateMap<Account, AccountModel>();
+                x.CreateMap<AccountModel, Account>();
             };
 
             return action;

@@ -1,0 +1,26 @@
+﻿@model DotNetCore.Web.Areas.Admin.Models.Accounts.AccountModel
+@{
+    ViewData["Title"] = "Update";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Edit email account</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <form asp-action="update" asp-controller="emailaccount" method="post" class="form-horizontal form-label-left">
+            <div class="x_panel">
+                <div class="x_content">
+                    @Html.HiddenFor(x => x.Id)
+                    @Html.Partial("_CreateOrUpdate", Model)
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/site.validation.min.js"></script>
+}

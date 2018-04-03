@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DotNetCore.Service.Helpers
 {
-   public interface IDateTimeHelper
+    public interface IDateTimeHelper
     {
 
         /// <summary>
@@ -23,36 +23,19 @@ namespace DotNetCore.Service.Helpers
         ReadOnlyCollection<TimeZoneInfo> GetSystemTimeZones();
 
         /// <summary>
-        /// Converts the date and time to current user date and time
+        /// Converts the date and time to current website date and time
         /// </summary>
         /// <param name="dt">The date and time (respesents local system time or UTC time) to convert.</param>
         /// <returns>A DateTime value that represents time that corresponds to the dateTime parameter in customer time zone.</returns>
-        DateTime ConvertToUserTime(DateTime dt);
+        DateTime ConvertToWebSiteTime(DateTime dt);
 
         /// <summary>
-        /// Converts the date and time to current user date and time
+        /// Converts the date and time to current website date and time
         /// </summary>
-        /// <param name="dt">The date and time (respesents local system time or UTC time) to convert.</param>
+        /// <param name="dt">Date time</param>
         /// <param name="sourceDateTimeKind">The source datetimekind</param>
-        /// <returns>A DateTime value that represents time that corresponds to the dateTime parameter in customer time zone.</returns>
-        DateTime ConvertToUserTime(DateTime dt, DateTimeKind sourceDateTimeKind);
-
-        /// <summary>
-        /// Converts the date and time to current user date and time
-        /// </summary>
-        /// <param name="dt">The date and time to convert.</param>
-        /// <param name="sourceTimeZone">The time zone of dateTime.</param>
-        /// <returns>A DateTime value that represents time that corresponds to the dateTime parameter in customer time zone.</returns>
-        DateTime ConvertToUserTime(DateTime dt, TimeZoneInfo sourceTimeZone);
-
-        /// <summary>
-        /// Converts the date and time to current user date and time
-        /// </summary>
-        /// <param name="dt">The date and time to convert.</param>
-        /// <param name="sourceTimeZone">The time zone of dateTime.</param>
-        /// <param name="destinationTimeZone">The time zone to convert dateTime to.</param>
-        /// <returns>A DateTime value that represents time that corresponds to the dateTime parameter in customer time zone.</returns>
-        DateTime ConvertToUserTime(DateTime dt, TimeZoneInfo sourceTimeZone, TimeZoneInfo destinationTimeZone);
+        /// <returns></returns>
+        DateTime ConvertToWebSiteTime(DateTime dt, DateTimeKind sourceDateTimeKind);
 
         /// <summary>
         /// Converts the date and time to Coordinated Universal Time (UTC)
@@ -78,20 +61,9 @@ namespace DotNetCore.Service.Helpers
         DateTime ConvertToUtcTime(DateTime dt, TimeZoneInfo sourceTimeZone);
 
         /// <summary>
-        /// Gets a customer time zone
-        /// </summary>
-        /// <param name="customer">Customer</param>
-        /// <returns>Customer time zone; if customer is null, then default store time zone</returns>
-        TimeZoneInfo GetCustomerTimeZone(Account account);
-
-        /// <summary>
         /// Gets or sets a default store time zone
         /// </summary>
-        TimeZoneInfo DefaultStoreTimeZone { get; set; }
+        TimeZoneInfo DefaultWebSiteTimeZone { get; set; }
 
-        /// <summary>
-        /// Gets or sets the current user time zone
-        /// </summary>
-        TimeZoneInfo CurrentTimeZone { get; set; }
     }
 }

@@ -58,14 +58,30 @@ var TableInit = function () {
                 },
                 {
                     field: "id",
+                    title: "Mark up default email account",
+                    align: "center",
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        var a;
+                        if (value != null) {
+                            a = '<a class="btn btn-info btn-xs"   href="/admin/EmailAccount/MarkAsDefaultEmail/' + value + '" >Mark up default account</a>'
+                        } else {
+                            a = '-';
+                        }
+                        return a;
+                    },
+                    events: 'operateEvents'
+                },
+                {
+                    field: "id",
                     title: "Operation",
                     align: "center",
                     valign: "middle",
                     formatter: function (value, row, index) {
                         var a;
                         if (value != null) {
-                            a = '<a class="btn btn-info btn-xs"   href="/admin/EmailAccount/Update/' + value + '" >Edit</a>'+
-                            '<a class = "remove btn btn-danger btn-xs" href="javascript:void(0)">Delete</a> ';
+                            a = '<a class="btn btn-info btn-xs"   href="/admin/EmailAccount/Update/' + value + '" >Edit</a>' +
+                                '<a class = "remove btn btn-danger btn-xs" href="javascript:void(0)">Delete</a> ';
                         } else {
                             a = '-';
                         }

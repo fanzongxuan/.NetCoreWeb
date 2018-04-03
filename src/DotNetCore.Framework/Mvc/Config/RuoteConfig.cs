@@ -12,15 +12,11 @@ namespace DotNetCore.Framework.Mvc.Config
         public static void Config(this IRouteBuilder routes)
         {
             routes.MapRoute(
+                    name: "area",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            routes.MapRoute(
-                   name: "login",
-                   template: "{controller=UserInfo}/{action=Login}");
-            routes.MapRoute(
-                   name: "areas",
-                   template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-         );
         }
     }
 }

@@ -67,7 +67,7 @@ var TableInit = function () {
                     formatter: function (value, row, index) {
                         var a;
                         if (value != null) {
-                            a = '<a class="btn btn-info btn-xs"   href="/admin/Account/Edit/' + value + '" >Edit</a>' +
+                            a = '<a class="btn btn-info btn-xs"   href="/admin/account/update/' + value + '" >Edit</a>' +
                                 '<a class = "remove btn btn-danger btn-xs" href="javascript:void(0)">Delete</a> ';
                         } else {
                             a = '-';

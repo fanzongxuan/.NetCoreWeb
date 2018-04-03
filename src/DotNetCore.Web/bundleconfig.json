@@ -17,7 +17,8 @@
       "wwwroot/lib/font-awesome/css/font-awesome.min.css",
       "wwwroot/lib/nprogress/nprogress.css",
       "wwwroot/lib/animate.css/animate.min.css",
-      "wwwroot/lib/bootstrap-table/dist/bootstrap-table.css"
+      "wwwroot/lib/bootstrap-table/dist/bootstrap-table.css",
+      "wwwroot/lib/select2/dist/css/select2.css"
     ]
   },
   {
@@ -62,7 +63,9 @@
       "wwwroot/lib/bootstrap-daterangepicker/daterangepicker.js",
       "wwwroot/lib/bootstrap-table/dist/bootstrap-table.js",
       "wwwroot/lib/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js",
-      "wwwroot/js/admin/custom.min.js"
+      "wwwroot/lib/select2/dist/js/select2.js",
+      "wwwroot/js/admin/custom.min.js",
+      "wwwroot/js/admin/site.admin.js"
     ],
     // Optionally specify minification options
     "minify": {

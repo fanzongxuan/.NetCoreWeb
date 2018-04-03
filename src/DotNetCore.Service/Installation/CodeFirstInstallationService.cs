@@ -13,6 +13,7 @@ using DotNetCore.Core.Infrastructure;
 using DotNetCore.Core.Extensions;
 using DotNetCore.Core.Domain.Messages;
 using DotNetCore.Service.Messages;
+using DotNetCore.Service.Helpers;
 
 namespace DotNetCore.Service.Installation
 {
@@ -136,6 +137,11 @@ namespace DotNetCore.Service.Installation
             _settingService.SaveSetting(new EmailAccountSettings
             {
                 DefaultEmailAccountId = eaGeneral.Id
+            });
+
+            _settingService.SaveSetting(new DateTimeSettings
+            {
+                DefaultStoreTimeZoneId = TimeZoneInfo.Local.Id
             });
         }
 

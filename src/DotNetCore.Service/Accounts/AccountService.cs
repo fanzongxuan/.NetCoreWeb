@@ -307,6 +307,25 @@ namespace DotNetCore.Service.Accounts
                     throw new Exception($"Errors:{string.Join(";", identityRes.ErrorDescrirtions())}");
             }
         }
+
+        public IList<AccountRole> SearchRoles(string roleName = "",
+            string id = "",
+            string permissionSystemName = "")
+        {
+            var query = _accountRoleManager.Roles
+                        .Include("RolePermissionMaps.PermissionRecord");
+
+            if (!string.IsNullOrEmpty(roleName))
+                query = query.Where(x => x.Name == roleName);
+            if (!string.IsNullOrEmpty(id))
+                query = query.Where(x => x.Id == id);
+            if (!string.IsNullOrEmpty(permissionSystemName))
+                query = query.Where(x => x.RolePermissionMaps.Any(p => p.PermissionRecord.SystemName == "permissionSystemName"));
+
+            return query.ToList();
+
+        }
+
         #endregion
     }
 }

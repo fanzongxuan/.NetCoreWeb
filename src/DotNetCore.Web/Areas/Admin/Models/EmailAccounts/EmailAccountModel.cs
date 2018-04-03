@@ -9,7 +9,7 @@ namespace DotNetCore.Web.Areas.Admin.Models.EmailAccounts
 {
     public class EmailAccountModel : BaseEntityModel
     {
-        [Display(Name = "Email"), Required]
+        [Display(Name = "Email"), Required, EmailAddress]
         public string Email { get; set; }
 
         [Display(Name = "Display Name"), Required]

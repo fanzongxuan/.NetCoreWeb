@@ -15,6 +15,7 @@ using Autofac.Core;
 using System.Reflection;
 using Autofac.Builder;
 using System.Collections.Generic;
+using DotNetCore.Service.Helpers;
 
 namespace DotNetCore.Service.Infrastructure.DependencyManagement
 {
@@ -77,7 +78,6 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
                 .ToList()
                 .ForEach(x =>
                 {
-
                     builder.RegisterType(x).SingleInstance();
                 });
 
@@ -88,6 +88,7 @@ namespace DotNetCore.Service.Infrastructure.DependencyManagement
             builder.RegisterType<StandardPermissionProvider>().As<IPermissionProvider>().SingleInstance();
             builder.RegisterType<PermissionService>().As<IPermissionService>().InstancePerLifetimeScope();
             builder.RegisterType<EmailSender>().As<IEmailSender>().InstancePerLifetimeScope();
+            builder.RegisterType<DateTimeHelper>().As<IDateTimeHelper>().InstancePerLifetimeScope();
 
         }
     }

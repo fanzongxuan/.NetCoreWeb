@@ -116,7 +116,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
                 _emailAccountService.Update(entity);
 
                 SuccessNotification("Email Account has been updated!");
-                return Redirect("/admin/EmailAccount/list");
+                return RedirectToAction("List");
             }
             else
             {
@@ -155,7 +155,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
                 _emailAccountService.Insert(entity);
 
                 SuccessNotification("Email Account has been create!");
-                return Redirect("/admin/EmailAccount/list");
+                return RedirectToAction("List");
             }
             else
             {
@@ -179,7 +179,7 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
 
             _emailAccountSettings.DefaultEmailAccountId = defaultEmailAccount.Id;
             _settingService.SaveSetting(_emailAccountSettings);
-            return List();
+            return RedirectToAction("List");
         }
         #endregion
 
@@ -192,15 +192,13 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
             var res = new AjaxResult();
             if (!_permissionService.Authorize(StandardPermissionProvider.MangageEmailAccounts))
             {
-                res.Code = ReturnCode.Error;
-                res.Message = "Access denied";
+                res = DefalutAjaxResultProvider.AccessDenied;
             }
 
             var emailAccount = _emailAccountService.GetById(id);
             if (emailAccount == null)
             {
-                res.Code = ReturnCode.Error;
-                res.Message = "Not Found!";
+                res = DefalutAjaxResultProvider.NotFound;
             }
 
             _emailAccountService.Delete(emailAccount);

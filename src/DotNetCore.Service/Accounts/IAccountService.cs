@@ -61,6 +61,11 @@ namespace DotNetCore.Service.Accounts
         IList<string> GetRoleNamesByAccount(Account account);
 
         void InstallRoles();
+
+        IList<AccountRole> SearchRoles(string roleName = "",
+                                       string id = "",
+                                       string permissionSystemName = "");
+
         #endregion
     }
 }

@@ -10,7 +10,7 @@
 <div class="clearfix"></div>
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <form action="/admin/emailaccount/update" method="post" class="form-horizontal form-label-left">
+        <form asp-action="update" asp-controller="emailaccount" method="post" class="form-horizontal form-label-left">
             <div class="x_panel">
                 <div class="x_content">
                     @Html.HiddenFor(x => x.Id)

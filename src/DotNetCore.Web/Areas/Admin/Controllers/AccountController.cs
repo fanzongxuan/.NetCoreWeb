@@ -10,6 +10,11 @@ using DotNetCore.Core.Extensions;
 using DotNetCore.Core.Domain.Accounts;
 using DotNetCore.Service.Security;
 using DotNetCore.Framework.Attributes;
+using DotNetCore.Service.Helpers;
+using System.Net;
+using DotNetCore.Web.Areas.Admin.Infrastructure.AutoMapper;
+using DotNetCore.Web.Areas.Admin.Models.EmailAccounts;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DotNetCore.Web.Areas.Admin.Controllers
 {
@@ -19,17 +24,52 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
 
         private readonly IAccountService _accountService;
         private readonly IPermissionService _permissionService;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         #endregion
 
         #region Ctor
 
         public AccountController(IAccountService accountService,
-            IPermissionService permissionService
+            IPermissionService permissionService,
+            IDateTimeHelper dateTimeHelper
             )
         {
             _accountService = accountService;
             _permissionService = permissionService;
+            _dateTimeHelper = dateTimeHelper;
+        }
+
+        #endregion
+
+        #region Uitites
+
+        [NonAction]
+        private AccountModel PrepareAccountModel(Account account)
+        {
+            var accountRoles = _accountService.GetRoleNamesByAccount(account);
+            var allRoles = _accountService.SearchRoles().ToList();
+
+            var model = account.ToModel();
+            model.Roles = accountRoles;
+            allRoles.ForEach(x =>
+            {
+                var selectList = new SelectListItem();
+                if (accountRoles.Contains(x.Name))
+                {
+                    selectList.Text = x.Name;
+                    selectList.Value = x.Id;
+                    selectList.Selected = true;
+                }
+                else
+                {
+                    selectList.Text = x.Name;
+                    selectList.Value = x.Id;
+                }
+                model.AvailaleRoles.Add(selectList);
+            });
+
+            return model;
         }
 
         #endregion
@@ -64,8 +104,8 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
                         Email = x.Email,
                         UserName = x.UserName,
                         PhoneNumber = x.PhoneNumber,
-                        CreateOn = x.CreateOnUtc,
-                        LastActivityDate = x.LastActivityDateUtc,
+                        CreateOn = _dateTimeHelper.ConvertToWebSiteTime(x.CreateOnUtc, DateTimeKind.Utc),
+                        LastActivityDate = _dateTimeHelper.ConvertToWebSiteTime(x.LastActivityDateUtc, DateTimeKind.Utc),
                         Roles = string.Join("|", _accountService.GetRoleNamesByAccount(x))
                     };
                 }),
@@ -83,19 +123,16 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
         {
             var res = new AjaxResult();
 
-            //access
             if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccounts))
             {
                 res = DefalutAjaxResultProvider.AccessDenied;
-                return Json(res);
             }
 
             var account = _accountService.GetById(id);
 
             if (account == null)
             {
-                res.Message = "account not exsit!";
-                res.Code = ReturnCode.Error;
+                res = DefalutAjaxResultProvider.NotFound;
             }
 
             var rolesCantBeDelete = new List<string>();
@@ -127,6 +164,26 @@ namespace DotNetCore.Web.Areas.Admin.Controllers
         #endregion
 
         #region Update
+
+        public IActionResult Update(string id)
+        {
+            if (!_permissionService.Authorize(StandardPermissionProvider.MangageAccounts))
+                return AccessDeniedView();
+
+            var account = _accountService.GetById(id);
+            if (account == null)
+                return new StatusCodeResult((int)HttpStatusCode.NotFound);
+            var model = PrepareAccountModel(account);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(AccountModel model)
+        {
+            return View();
+        }
 
         #endregion
 

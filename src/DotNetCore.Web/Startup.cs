@@ -27,10 +27,7 @@ namespace DotNetCore.Web
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // config services
-            services.ConfigMyWebServices(Configuration);
-
-            // Create the IServiceProvider based on the container.
-            return EngineContext.Current.ServiceProvider;
+            return services.ConfigMyWebServices(Configuration);
 
         }
 

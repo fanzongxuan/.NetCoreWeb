@@ -7,8 +7,7 @@ using System.Text;
 
 namespace DotNetCore.Service
 {
-    //due to ef core don't support lazy load now,so this service hava some issues
-   public class BaseService<T> where T: BaseEntity
+    public class BaseService<T> where T : BaseEntity
     {
         private readonly IRepository<T> _repository;
         private readonly IEventPublisher _eventPublisher;
@@ -19,7 +18,7 @@ namespace DotNetCore.Service
             _repository = repository;
             _eventPublisher = eventPublisher;
         }
-        
+
         public T GetById(int id)
         {
             if (id == 0)
@@ -38,7 +37,7 @@ namespace DotNetCore.Service
             if (entitiy == null)
                 throw new ArgumentNullException("entitiy");
             _repository.Insert(entitiy);
-            _eventPublisher.EntityInserted<T>(entitiy);
+            _eventPublisher.EntityInserted(entitiy);
         }
 
         public void Update(T entitiy)
@@ -46,7 +45,7 @@ namespace DotNetCore.Service
             if (entitiy == null)
                 throw new ArgumentNullException("entitiy");
             _repository.Update(entitiy);
-            _eventPublisher.EntityUpdated<T>(entitiy);
+            _eventPublisher.EntityUpdated(entitiy);
         }
     }
 }
